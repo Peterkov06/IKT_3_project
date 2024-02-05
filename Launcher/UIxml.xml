@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Buttons>
-  <Button Name="Button1" Content="there" OnClick="Hello" />
-  <Button Name="Button2" Content="JancsiMancsi" OnClick="Hello" />
-  <Button Name="Button3" Content="Bonaparte István" OnClick="Hello" />
-  <Button Name="Button4" Content="Cook Mathias" OnClick="Hello" />
-  <Button Name="Button5" Content="Cook Mathias" OnClick="Hello" />
-  <Button Name="Button6" Content="Cook Mathias" OnClick="Hello" />
-  <Button Name="Button7" Content="Cook Mathias" OnClick="Hello" />
-  <CharacterChoose>
-    <UI></UI>
-  </CharacterChoose>
-</Buttons>
+<GamePlugin>
+  <UI>
+    <MainMenu>
+      <Button Name="Button1" Content="there" OnClick="Hello" />
+      <Button Name="Button2" Content="JancsiMancsi" OnClick="Hello" />
+      <Button Name="Button3" Content="Bonaparte István" OnClick="Hello" />
+      <Button Name="Button4" Content="Cook Mathias" OnClick="Hello" />
+    </MainMenu>
+  </UI>
+  <PathLinks>
+    <StoryDatabase Path="..\\..\\..\\TestStoryFiles\\TestStory.db"></StoryDatabase>
+  </PathLinks>
+</GamePlugin>
