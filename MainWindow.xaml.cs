@@ -22,6 +22,7 @@ namespace IKT_3_project
     public partial class MainWindow : Window
     {
         public string dbPath;
+        public Player player;
         public MainWindow()
         {
             InitializeComponent();
@@ -52,6 +53,7 @@ namespace IKT_3_project
             }
 
             GeneratePart(1);
+            player = new(100);
 
             doc.Save(path);
         }
@@ -82,7 +84,7 @@ namespace IKT_3_project
                         }
                     }
 
-                    string sqlComm2 = $"SELECT text, next_part FROM Choiches Where part_id = {ind}";
+                    string sqlComm2 = $"SELECT text, next_part, method, parameters FROM Choiches Where part_id = {ind}";
                     StackPanel panel = new StackPanel();
                     Grid.SetColumn(panel, 1);
 
@@ -104,6 +106,13 @@ namespace IKT_3_project
                                     int next_id = r2.GetInt32(1);
                                     button.Click += (sender, e) => { GeneratePart(next_id); };
                                 }
+                                else
+                                {
+                                    string methodName = r2.GetString(2);
+                                    MethodInfo method = GetType().GetMethod(methodName);
+                                    int num = Convert.ToInt32(r2.GetString(3));
+                                    button.Click += (sender, e) => { method.Invoke(this, new object[] { num }); };
+                                }
                                 
                                 panel.Children.Add(button);
                             }
@@ -112,6 +121,76 @@ namespace IKT_3_project
                     }
                 }
             }
+        }
+
+        public void Battle(int combatSit)
+        {
+            MainGrid.Children.Clear();
+            StackPanel panel = new StackPanel();
+            Grid.SetColumn(panel, 1);
+            int win_id = 0, lose_id = 0;
+            string connString = $"Data Source={dbPath};Version=3;";
+            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            {
+                conn.Open();
+                string sqlComm = $"SELECT win_part, defeat_part FROM CombatSituations WHERE id = {combatSit}";
+                using (SQLiteCommand cmd = new(sqlComm, conn))
+                {
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            win_id = reader.GetInt32(0);
+                            lose_id = reader.GetInt32(1);
+                        }
+                    }
+                }
+            }
+
+            Button button = new Button
+            {
+                Content = "Take Damage",
+                FontSize = 12,
+                Margin = new Thickness(5),
+            };
+
+            button.Click += (sender, e) => { player.TakeDamage(25); };
+
+            Button button2 = new Button
+            {
+                Content = "Win",
+                FontSize = 12,
+                Margin = new Thickness(5),
+            };
+            button2.Click += (sender, e) => { GeneratePart(win_id); };
+
+            panel.Children.Add(button);
+            panel.Children.Add(button2);
+            MainGrid.Children.Add(panel);
+        }
+    }
+
+    public class Player
+    {
+        public int HP { get; set; }
+
+        public Player(int hP)
+        {
+            HP = hP;
+        }
+
+        public void TakeDamage(int damage)
+        {
+            HP -= damage;
+            if (HP <= 0)
+            {
+                Death();
+            }
+        }
+
+        void Death()
+        {
+            MessageBox.Show("You died!");
         }
     }
 }
