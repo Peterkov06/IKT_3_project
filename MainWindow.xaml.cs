@@ -1,4 +1,6 @@
-﻿using System.Data.SQLite;
+﻿using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Data.SQLite;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -56,6 +58,11 @@ namespace IKT_3_project
             player = new(100);
 
             doc.Save(path);
+
+            var container = new CompositionContainer();
+            var catalog = new AggregateCatalog();
+            catalog.Catalogs.Add(new DirectoryCatalog("..\\..\\..\\TestStoryFiles"));
+            container. = catalog;
         }
 
         public void Hello(object sender, RoutedEventArgs eventArgs)
