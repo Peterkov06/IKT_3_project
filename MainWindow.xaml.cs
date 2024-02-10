@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
+﻿using InterfaceClass;
 using System.Data.SQLite;
 using System.IO;
 using System.Reflection;
@@ -59,10 +58,21 @@ namespace IKT_3_project
 
             doc.Save(path);
 
-            var container = new CompositionContainer();
-            var catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new DirectoryCatalog("..\\..\\..\\TestStoryFiles"));
-            container. = catalog;
+            Assembly loadedDLL = Assembly.LoadFrom("..\\..\\..\\TestStoryFiles\\PluginTest1.dll");
+            Type type = loadedDLL.GetType("PluginTest1.Class1");
+
+            object instance = Activator.CreateInstance(type);
+
+
+            MethodInfo[] methods = type.GetMethods();
+            string methodNames = "";
+            foreach ( MethodInfo method in methods )
+            {
+                methodNames += method.Name + " ";
+            }
+            MessageBox.Show($"{methodNames}");
+            object res = methods[0].Invoke(instance, new object[] {});
+
         }
 
         public void Hello(object sender, RoutedEventArgs eventArgs)
@@ -152,6 +162,7 @@ namespace IKT_3_project
                         }
                     }
                 }
+                conn.Close();
             }
 
             Button button = new Button

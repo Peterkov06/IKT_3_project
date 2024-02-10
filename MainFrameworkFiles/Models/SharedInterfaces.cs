@@ -18,6 +18,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
             public int CurrentHP { get; set; }
 
             public Dictionary<string, int> Stats { get; set; }
+            public Dictionary<string, int> Buffs { get; set; }
             public Dictionary<string, object> Inventory { get; set; }
 
             public void TakeDamage(int damage);

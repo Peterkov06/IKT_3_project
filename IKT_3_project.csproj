@@ -9,8 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="InterfaceClass">
+      <HintPath>..\..\..\Plugin tests\InterfaceClass\bin\Debug\net8.0\InterfaceClass.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
