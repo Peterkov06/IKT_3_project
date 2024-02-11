@@ -44,6 +44,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
 
         public interface IAdditionalSystem
         {
+            public int GetID();
             public void Execute();
         }
 

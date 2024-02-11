@@ -24,6 +24,9 @@ namespace IKT_3_project
     {
         public string dbPath;
         public Player player;
+        public Dictionary<int, IAdditionalSystem> instances = new();
+        //MethodInfo[] methods;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,37 +50,41 @@ namespace IKT_3_project
             MainGrid.Children.Add(panel);*/
 
             dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x=>x.Value).FirstOrDefault();
-
-            if (!File.Exists(dbPath))
-            {
-                SQLiteConnection.CreateFile(dbPath);
-            }
-
             GeneratePart(1);
             player = new(100);
 
-            doc.Save(path);
+            var systemPaths = doc.Root.Descendants("PathLinks").Descendants("LogicSystem").ToArray();
 
-            Assembly loadedDLL = Assembly.LoadFrom("..\\..\\..\\TestStoryFiles\\PluginTest1.dll");
-            Type type = loadedDLL.GetType("PluginTest1.Class1");
-
-            object instance = Activator.CreateInstance(type);
-
-
-            MethodInfo[] methods = type.GetMethods();
-            string methodNames = "";
-            foreach ( MethodInfo method in methods )
+            foreach (var sytemPath in systemPaths)
             {
-                methodNames += method.Name + " ";
+                LoadDLL(sytemPath.Attribute("Path").Value);
             }
-            MessageBox.Show($"{methodNames}");
-            object res = methods[0].Invoke(instance, new object[] {});
 
+            doc.Save(path);
         }
 
-        public void Hello(object sender, RoutedEventArgs eventArgs)
+        public void LoadDLL(string path)
         {
-            MessageBox.Show("Hello There!");
+            Assembly loadedDLL = Assembly.LoadFrom(path);
+            Type[] type = loadedDLL.GetTypes();
+
+            foreach (Type t in type)
+            {
+                if (t.IsInterface || !t.IsClass)
+                {
+                    continue; // Skip interfaces and non-class types
+                }
+
+                if (!t.GetInterfaces().Contains(typeof(IAdditionalSystem)))
+                {
+                    continue; // Skip types not implementing IAdditionalSystem
+                }
+
+
+                IAdditionalSystem newSystem = (IAdditionalSystem)Activator.CreateInstance(t);
+
+                instances.Add(newSystem.GetID(), newSystem);
+            }
         }
 
         public void GeneratePart(int ind)
@@ -125,10 +132,24 @@ namespace IKT_3_project
                                 }
                                 else
                                 {
-                                    string methodName = r2.GetString(2);
-                                    MethodInfo method = GetType().GetMethod(methodName);
-                                    int num = Convert.ToInt32(r2.GetString(3));
-                                    button.Click += (sender, e) => { method.Invoke(this, new object[] { num }); };
+                                    int methodNum = Convert.ToInt32(r2.GetString(2));
+
+                                    button.Click += (sender, e) => 
+                                    {
+                                        try
+                                        {
+                                            int damage = (int)Math.Round((float)instances[methodNum].Execute(new object[] { player.HP }));
+                                            MessageBox.Show($"Damage: {damage}");
+                                            player.TakeDamage(damage);
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                        }
+                                        
+                                        MessageBox.Show($"Player HP: {player.HP}");
+                                        
+                                    };
                                 }
                                 
                                 panel.Children.Add(button);
@@ -209,6 +230,7 @@ namespace IKT_3_project
         void Death()
         {
             MessageBox.Show("You died!");
+            Application.Current.Shutdown();
         }
     }
 }
