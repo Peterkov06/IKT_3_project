@@ -1,8 +1,11 @@
 ﻿using InterfaceClass;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data.SQLite;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,11 +28,13 @@ namespace IKT_3_project
         public string dbPath;
         public Player player;
         public Dictionary<int, IAdditionalSystem> instances = new();
-        //MethodInfo[] methods;
+        public Dictionary<int, Func<string, int,object?>> TestMethodDIct = new();
 
         public MainWindow()
         {
             InitializeComponent();
+
+            TestMethodDIct.Add(1, GetFromPlayer);
 
             string path = "..\\..\\..\\Launcher\\UIxml.xml";
             XDocument doc = XDocument.Load(path);
@@ -133,20 +138,24 @@ namespace IKT_3_project
                                 else
                                 {
                                     int methodNum = Convert.ToInt32(r2.GetString(2));
+                                    string json = r2.GetString(3);
 
                                     button.Click += (sender, e) => 
                                     {
                                         try
                                         {
-                                            int damage = (int)Math.Round((float)instances[methodNum].Execute(new object[] { player.HP }));
-                                            MessageBox.Show($"Damage: {damage}");
-                                            player.TakeDamage(damage);
+                                            JObject jsObj = JsonConvert.DeserializeObject<JObject>(json);
+                                            IEnumerable<string> keys = jsObj.Properties().Select(p => p.Name);
+                                            foreach (string key in keys)
+                                            {
+                                                MessageBox.Show($"Player HP: {TestMethodDIct[methodNum](key, (int)jsObj[key])}");
+                                            }
                                         }
                                         catch (Exception)
                                         {
-
+                                            throw;
                                         }                     
-                                        MessageBox.Show($"Player HP: {player.HP}");         
+                                        //MessageBox.Show($"Player HP: {player.HP}");         
                                     };
                                 }
                                 
@@ -158,11 +167,48 @@ namespace IKT_3_project
                 }
             }
         }
+
+        public object? GetFromPlayer(string key, int method)
+        {
+            switch (method)
+            {
+                case 1:
+                    return player.HP;
+                case 2:
+                    return player.Stats[key] + player.Buffs[key];
+                case 3:
+                    return player.Inventory[key];
+            }
+            return null;
+        }
+
+        public object? GiveToPlayer(string key, int method)
+        {
+            switch (method)
+            {
+                case 1:
+                    player.HP += Convert.ToInt32(player.HP);
+                    return null;
+                case 2:
+                    //To be implemented: Stat adding
+                    return null;
+                case 3:
+                    //To be implemented: Inventory adding
+                    return null;
+                case 4:
+                    //To be implemented: Buff adding
+                    return null;
+            }
+            return null;
+        }
     }
 
     public class Player
     {
         public int HP { get; set; }
+        public Dictionary<string, int> Stats { get; set; }
+        public Dictionary<string, int> Buffs { get; set; }
+        public Dictionary<string, object> Inventory { get; set; }
 
         public Player(int hP)
         {
