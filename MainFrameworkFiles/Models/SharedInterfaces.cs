@@ -22,7 +22,6 @@ namespace IKT_3_project.MainFrameworkFiles.Models
             public Dictionary<string, object> Inventory { get; set; }
 
             public void TakeDamage(int damage);
-            public int CalculateDamage();
             public void Heal(int heal);
         }
 
@@ -45,7 +44,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
         public interface IAdditionalSystem
         {
             public int GetID();
-            public void Execute();
+            public object? Execute(object[] parameters);
         }
 
     }

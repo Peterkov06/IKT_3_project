@@ -145,10 +145,8 @@ namespace IKT_3_project
                                         catch (Exception)
                                         {
 
-                                        }
-                                        
-                                        MessageBox.Show($"Player HP: {player.HP}");
-                                        
+                                        }                     
+                                        MessageBox.Show($"Player HP: {player.HP}");         
                                     };
                                 }
                                 
@@ -159,53 +157,6 @@ namespace IKT_3_project
                     }
                 }
             }
-        }
-
-        public void Battle(int combatSit)
-        {
-            MainGrid.Children.Clear();
-            StackPanel panel = new StackPanel();
-            Grid.SetColumn(panel, 1);
-            int win_id = 0, lose_id = 0;
-            string connString = $"Data Source={dbPath};Version=3;";
-            using (SQLiteConnection conn = new SQLiteConnection(connString))
-            {
-                conn.Open();
-                string sqlComm = $"SELECT win_part, defeat_part FROM CombatSituations WHERE id = {combatSit}";
-                using (SQLiteCommand cmd = new(sqlComm, conn))
-                {
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            win_id = reader.GetInt32(0);
-                            lose_id = reader.GetInt32(1);
-                        }
-                    }
-                }
-                conn.Close();
-            }
-
-            Button button = new Button
-            {
-                Content = "Take Damage",
-                FontSize = 12,
-                Margin = new Thickness(5),
-            };
-
-            button.Click += (sender, e) => { player.TakeDamage(25); };
-
-            Button button2 = new Button
-            {
-                Content = "Win",
-                FontSize = 12,
-                Margin = new Thickness(5),
-            };
-            button2.Click += (sender, e) => { GeneratePart(win_id); };
-
-            panel.Children.Add(button);
-            panel.Children.Add(button2);
-            MainGrid.Children.Add(panel);
         }
     }
 
