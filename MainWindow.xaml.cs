@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -35,6 +36,7 @@ namespace IKT_3_project
             InitializeComponent();
 
             TestMethodDIct.Add(1, GetFromPlayer);
+            TestMethodDIct.Add(2, GiveToPlayer);
 
             string path = "..\\..\\..\\Launcher\\UIxml.xml";
             XDocument doc = XDocument.Load(path);
@@ -133,7 +135,7 @@ namespace IKT_3_project
                                     Margin = new Thickness(5),
                                 };
                                 
-                                if (!r2.IsDBNull(1))
+                                if (r2.IsDBNull(2))
                                 {
                                     int next_id = r2.GetInt32(1);
                                     button.Click += (sender, e) => { GeneratePart(next_id); };
@@ -181,7 +183,7 @@ namespace IKT_3_project
                                         {
                                             throw;
                                         }                     
-                                        MessageBox.Show($"Player HP: {player.HP}");         
+                                        //MessageBox.Show($"Player HP: {player.HP}");         
                                     };
                                 }
                                 
@@ -194,7 +196,7 @@ namespace IKT_3_project
             }
         }
 
-        public object? GetFromPlayer(string key, int method)
+        public object? GetFromPlayer(string key, int method) // Interaction with the player: Getting some data from "it"
         {
             switch (method)
             {
@@ -208,21 +210,47 @@ namespace IKT_3_project
             return null;
         }
 
-        public object? GiveToPlayer(string key, int method)
+        public object? GiveToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
         {
             switch (method)
             {
                 case 1:
-                    player.HP += Convert.ToInt32(player.HP);
+                    player.HP += Convert.ToInt32(key);
                     return null;
                 case 2:
                     //To be implemented: Stat adding
+                    JObject stat = JsonConvert.DeserializeObject<JObject>(key);
+                    IEnumerable<string> keys = stat.Properties().Select(p => p.Name);
+                    foreach (string keyStrg in keys)
+                    {
+                        player.Stats.Add(keyStrg, (int)stat[keyStrg]);
+                    }
                     return null;
                 case 3:
                     //To be implemented: Inventory adding
+                    JObject items = JsonConvert.DeserializeObject<JObject>(key);
+                    IEnumerable<string> itemKeys = items.Properties().Select(p => p.Name);
+                    foreach (string keyStrg in itemKeys)
+                    {
+                        JObject item = (JObject)items[keyStrg];
+                        IEnumerable<string> itemData = item.Properties().Select(p => p.Name);
+                        Dictionary<string, int> dat = new Dictionary<string, int>();
+                        foreach (string dataKeyStrg in itemData)
+                        {
+                            dat.Add(dataKeyStrg, (int)item[dataKeyStrg]);
+                        }
+                        player.Inventory.Add(keyStrg, dat);
+                    }
                     return null;
                 case 4:
                     //To be implemented: Buff adding
+                    JObject buff = JsonConvert.DeserializeObject<JObject>(key);
+                    IEnumerable<string> buffKeys = buff.Properties().Select(p => p.Name);
+                    foreach (string keyStrg in buffKeys)
+                    {
+                        player.Buffs.Add(keyStrg, (int)buff[keyStrg]);
+                    }
+                    MessageBox.Show($"{player.Buffs.Count}");
                     return null;
             }
             return null;
