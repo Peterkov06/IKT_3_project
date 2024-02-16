@@ -66,6 +66,9 @@ namespace IKT_3_project
             }
 
             doc.Save(path);
+
+            player.Inventory.Add("Weapon", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
+            player.Stats.Add("Strength", 20);
         }
 
         public void LoadDLL(string path)
@@ -146,16 +149,39 @@ namespace IKT_3_project
                                         {
                                             JObject jsObj = JsonConvert.DeserializeObject<JObject>(json);
                                             IEnumerable<string> keys = jsObj.Properties().Select(p => p.Name);
+                                            
+                                            List<object> parameters = new();
                                             foreach (string key in keys)
                                             {
-                                                MessageBox.Show($"Player HP: {TestMethodDIct[methodNum](key, (int)jsObj[key])}");
+                                                if (jsObj[key].Type == JTokenType.Array)
+                                                {
+                                                    if (jsObj[key][1].Type == JTokenType.Array)
+                                                    {
+                                                        Dictionary<string, int> item = (Dictionary<string, int>)TestMethodDIct[methodNum](key, (int)jsObj[key][0]);
+                                                        
+                                                        foreach (string element in jsObj[key][1])
+                                                        {
+                                                            //MessageBox.Show($"Got back: ({key}) {item[element]}");
+                                                             parameters.Add(item[element]);
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    //MessageBox.Show($"Got back: ({key}) {TestMethodDIct[methodNum](key, (int)jsObj[key])}");
+                                                    parameters.Add(TestMethodDIct[methodNum](key, (int)jsObj[key]));
+                                                }
                                             }
+                                            //MessageBox.Show($"{parameters[0]} {parameters[1]} {parameters[2]}");
+                                            //MessageBox.Show($"Damage: {(int)Math.Round((float)instances[3].Execute(parameters.ToArray()))}");
+                                            //player.TakeDamage((int)Math.Round((float)instances[3].Execute(parameters.ToArray())));
+
                                         }
                                         catch (Exception)
                                         {
                                             throw;
                                         }                     
-                                        //MessageBox.Show($"Player HP: {player.HP}");         
+                                        MessageBox.Show($"Player HP: {player.HP}");         
                                     };
                                 }
                                 
@@ -175,7 +201,7 @@ namespace IKT_3_project
                 case 1:
                     return player.HP;
                 case 2:
-                    return player.Stats[key] + player.Buffs[key];
+                    return player.Stats[key]/* + player.Buffs[key]*/;
                 case 3:
                     return player.Inventory[key];
             }
@@ -208,11 +234,14 @@ namespace IKT_3_project
         public int HP { get; set; }
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Buffs { get; set; }
-        public Dictionary<string, object> Inventory { get; set; }
+        public Dictionary<string, Dictionary<string, int>> Inventory { get; set; }
 
         public Player(int hP)
         {
             HP = hP;
+            Stats = new();
+            Buffs = new();
+            Inventory = new();
         }
 
         public void TakeDamage(int damage)
