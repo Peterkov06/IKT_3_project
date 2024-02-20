@@ -143,7 +143,12 @@ namespace IKT_3_project
                                 else
                                 {
                                     int methodNum = Convert.ToInt32(r2.GetString(2));
+                                    int? next_id = null;
                                     string json = r2.GetString(3);
+                                    if (!r2.IsDBNull(1))
+                                    {
+                                        next_id = r2.GetInt32(1);
+                                    }
 
                                     button.Click += (sender, e) => 
                                     {
@@ -153,31 +158,46 @@ namespace IKT_3_project
                                             IEnumerable<string> keys = jsObj.Properties().Select(p => p.Name);
                                             
                                             List<object> parameters = new();
-                                            foreach (string key in keys)
+                                            foreach (string key in keys) // All keys in the object (the different kind of parameters getter method id)
                                             {
-                                                if (jsObj[key].Type == JTokenType.Array)
+                                                if (jsObj[key].Type == JTokenType.Array) // If the parameter argument is an array of requests
                                                 {
-                                                    if (jsObj[key][1].Type == JTokenType.Array)
+                                                    foreach (var value in jsObj[key]) // Value = array element
                                                     {
-                                                        Dictionary<string, int> item = (Dictionary<string, int>)TestMethodDIct[methodNum](key, (int)jsObj[key][0]);
-                                                        
-                                                        foreach (string element in jsObj[key][1])
+                                                        if (value.Type == JTokenType.Object) // If the value is an object
                                                         {
-                                                            //MessageBox.Show($"Got back: ({key}) {item[element]}");
-                                                             parameters.Add(item[element]);
+                                                            JObject keyValuePairs = value as JObject; // Set it as one
+                                                            string[] elementProps = keyValuePairs.Properties().Select(p => p.Name).ToArray(); // Keys in the object (MUST be 1), the name of the obj (like sword)
+                                                            if (value[elementProps[0]].Type == JTokenType.Array) // If the required object has multiple properties (like damage)
+                                                            {
+                                                                foreach (var itemProp in value[elementProps[0]])
+                                                                {
+                                                                    Dictionary<string, int> item = (Dictionary<string, int>)TestMethodDIct[1](elementProps[0], Convert.ToInt32(key));
+                                                                    MessageBox.Show($"Got back: ({elementProps[0]}) ({(string)itemProp}) {item[(string)itemProp]}");
+                                                                    parameters.Add(item[(string)itemProp]);
+                                                                }
+                                                            }
+                                                        }
+                                                        else if (value.Type == JTokenType.String) // If the array only contains property names
+                                                        {
+                                                            MessageBox.Show($"Got back: ({value}) {TestMethodDIct[1]((string)value, Convert.ToInt32(key))}");
+                                                            parameters.Add(TestMethodDIct[1]((string)value, Convert.ToInt32(key)));
                                                         }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    //MessageBox.Show($"Got back: ({key}) {TestMethodDIct[methodNum](key, (int)jsObj[key])}");
-                                                    parameters.Add(TestMethodDIct[methodNum](key, (int)jsObj[key]));
+                                                    MessageBox.Show($"Got back: ({(string)jsObj[key]}) {TestMethodDIct[1]((string)jsObj[key], Convert.ToInt32(key))}");
+                                                    parameters.Add(TestMethodDIct[1]((string)jsObj[key], Convert.ToInt32(key)));
                                                 }
                                             }
                                             //MessageBox.Show($"{parameters[0]} {parameters[1]} {parameters[2]}");
                                             //MessageBox.Show($"Damage: {(int)Math.Round((float)instances[3].Execute(parameters.ToArray()))}");
                                             //player.TakeDamage((int)Math.Round((float)instances[3].Execute(parameters.ToArray())));
-
+                                            if (next_id != null)
+                                            {
+                                                GeneratePart((int)next_id);
+                                            }
                                         }
                                         catch (Exception)
                                         {
@@ -198,6 +218,8 @@ namespace IKT_3_project
 
         public object? GetFromPlayer(string key, int method) // Interaction with the player: Getting some data from "it"
         {
+            try
+            {
             switch (method)
             {
                 case 1:
@@ -206,6 +228,11 @@ namespace IKT_3_project
                     return player.Stats[key]/* + player.Buffs[key]*/;
                 case 3:
                     return player.Inventory[key];
+            }
+            }
+            catch (Exception)
+            {
+
             }
             return null;
         }
