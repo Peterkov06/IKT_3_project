@@ -37,6 +37,7 @@ namespace IKT_3_project
 
             TestMethodDIct.Add(1, GetFromPlayer);
             TestMethodDIct.Add(2, GiveToPlayer);
+            TestMethodDIct.Add(3, GetFromDB);
 
             string path = "..\\..\\..\\Launcher\\UIxml.xml";
             XDocument doc = XDocument.Load(path);
@@ -71,6 +72,7 @@ namespace IKT_3_project
 
             player.Inventory.Add("Weapon", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
             player.Stats.Add("Strength", 20);
+            
         }
 
         public void LoadDLL(string path)
@@ -191,9 +193,7 @@ namespace IKT_3_project
                                                     parameters.Add(TestMethodDIct[1]((string)jsObj[key], Convert.ToInt32(key)));
                                                 }
                                             }
-                                            //MessageBox.Show($"{parameters[0]} {parameters[1]} {parameters[2]}");
-                                            //MessageBox.Show($"Damage: {(int)Math.Round((float)instances[3].Execute(parameters.ToArray()))}");
-                                            //player.TakeDamage((int)Math.Round((float)instances[3].Execute(parameters.ToArray())));
+                                           
                                             if (next_id != null)
                                             {
                                                 GeneratePart((int)next_id);
@@ -225,7 +225,11 @@ namespace IKT_3_project
                 case 1:
                     return player.HP;
                 case 2:
-                    return player.Stats[key]/* + player.Buffs[key]*/;
+                        if (player.Buffs.ContainsKey(key))
+                        {
+                            return player.Stats[key] + player.Buffs[key];
+                        }
+                    return player.Stats[key];
                 case 3:
                     return player.Inventory[key];
             }
@@ -280,6 +284,60 @@ namespace IKT_3_project
                     MessageBox.Show($"{player.Buffs.Count}");
                     return null;
             }
+            return null;
+        }
+
+        public object? GetFromDB(string key, int method) // Get data out from the DB
+        {
+            string connString = $"Data Source={dbPath};Version=3;";
+            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            {
+                conn.Open();
+                string sqlCommand = "";
+                switch (method)
+                {
+                    case 1: // Get item
+                        sqlCommand = $"SELECT * FROM Items WHERE id = {key}";
+                        using(SQLiteCommand cmd = new(sqlCommand, conn))
+                        {
+                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    try
+                                    {
+                                        JObject attributesJO = JObject.Parse(reader.GetString(2)); // Item attributes read
+                                        Dictionary<string, int> attributes = attributesJO.ToObject<Dictionary<string, int>>(); //Turn attributes into a dictionary
+                                        return new { Name = $"{reader.GetString(1)}", Attributes = attributes }; // Return the objectified item with it's name and attributes
+                                        
+                                    }
+                                    catch (Exception)
+                                    {
+                                    }
+                                }
+                            }
+
+                        }
+                        break;
+                    case 2: // Get Enemy (for fight)
+                        sqlCommand = $"SELECT * FROM Enemies WHERE id = {key}";
+                        using (SQLiteCommand cmd = new(sqlCommand, conn))
+                        {
+                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    JObject statsJO = JObject.Parse(reader.GetString(7));
+                                    Dictionary<string, int> stats = statsJO.ToObject<Dictionary<string, int>>();
+                                    JObject inventoryJO = JObject.Parse(reader.GetString(8));
+                                    Dictionary<string, Dictionary<string, int>> inventory = inventoryJO.ToObject<Dictionary<string, Dictionary<string, int>>>();
+                                    return new { Name = reader.GetString(1), Class = reader.GetString(2), Race = reader.GetString(3), Level = reader.GetInt32(4) , MaxHP = reader.GetInt32(5), CurrentHP = reader.GetInt32(6), Stats = stats, Inventory = inventory};
+                                }
+                            }
+                            break;
+                        }
+                }
+            }          
             return null;
         }
     }
