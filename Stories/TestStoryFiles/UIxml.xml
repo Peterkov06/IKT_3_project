@@ -9,7 +9,7 @@
     </MainMenu>
   </UI>
   <PathLinks>
-    <StoryDatabase Path="..\\..\\..\\TestStoryFiles\\TestStory.db"></StoryDatabase>
-    <LogicSystem Path="..\\..\\..\\TestStoryFiles\\TestPlugin2.dll"></LogicSystem>
+    <StoryDatabase Path="TestStory.db"></StoryDatabase>
+    <LogicSystem Path="TestPlugin2.dll"></LogicSystem>
   </PathLinks>
 </GamePlugin>

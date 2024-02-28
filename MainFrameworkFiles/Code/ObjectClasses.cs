@@ -37,4 +37,14 @@ namespace IKT_3_project
             Application.Current.Shutdown();
         }
     }
+
+    public class LoadNewStory
+    {
+        public string dbPath;
+
+        public LoadNewStory(string dbPath)
+        {
+            this.dbPath = dbPath;
+        }
+    }
 }

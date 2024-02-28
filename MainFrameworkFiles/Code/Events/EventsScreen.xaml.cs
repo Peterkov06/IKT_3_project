@@ -24,6 +24,7 @@ namespace IKT_3_project
     /// </summary>
     public partial class EventsScreen : UserControl
     {
+        MainWindow _main;
         public Dictionary<int, Func<string, int, object?>> ParameterMethods = new();
         public Dictionary<int, Func<string, int, object?>> EventMethods = new();
         Player player;
@@ -37,6 +38,22 @@ namespace IKT_3_project
             XDocument doc = XDocument.Load(path);
 
             dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
+
+            GeneratePart(1);
+
+        }
+        public EventsScreen(string xmlPath, MainWindow main)
+        {
+            _main = main;
+            InitializeComponent();
+            player = new(100);
+
+            string path = xmlPath;
+            XDocument doc = XDocument.Load(path);
+
+            string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
+
+            dbPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), _dbPath);
 
             GeneratePart(1);
 

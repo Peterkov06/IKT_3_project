@@ -27,18 +27,16 @@ namespace IKT_3_project
     public partial class MainWindow : Window
     {
         public string dbPath;
-        public Player player;
         public Dictionary<int, IAdditionalSystem> instances = new();
 
-        public delegate void ChangeScene(int sceneNum);
+        public delegate void ChangeScene(int sceneNum, object? arguments);
         public event ChangeScene ChangeSceneEvent;
 
         public MainWindow()
         {
             InitializeComponent();
             ChangeSceneEvent += SceneChanger;
-            ChangeSceneEvent.Invoke(1);
-            player = new(100);
+            ChangeSceneEvent.Invoke(0, null);
             /*EventMethods.Add(1, GiveToPlayer);
 
             ParameterMethods.Add(1, GetFromPlayer);
@@ -106,15 +104,26 @@ namespace IKT_3_project
 
         
 
-        public void SceneChanger(int num)
+        public void SceneChanger(int num, object? arguments)
         {
             switch (num)
             {
-                case 0:
-                    OurWindow.Content = new MainMenu();
+                case 0: // Loads main menu
+                    OurWindow.Content = new MainMenu(this);
                     break;
-                case 1:
-                    OurWindow.Content = new EventsScreen(player);
+                case 1: // Loads Character customizer
+                    OurWindow.Content = new CharacterCustomizer(this);
+                    break;
+                case 2: // Loads Events
+                    if (arguments != null && arguments is LoadNewStory)
+                    {
+                        LoadNewStory specifiedObj = arguments as LoadNewStory;
+                        string path = specifiedObj.dbPath;
+                        OurWindow.Content = new EventsScreen(path, this);
+                    }
+                    break;
+                case 3: // Loads Fight system
+                    OurWindow.Content = new FightSystem(this);
                     break;
             }
         }
