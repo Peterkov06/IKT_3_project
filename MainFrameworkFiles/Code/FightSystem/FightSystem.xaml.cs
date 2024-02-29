@@ -21,6 +21,7 @@ namespace IKT_3_project
     public partial class FightSystem : UserControl
     {
         MainWindow _main;
+        Player player = new(100);
         public FightSystem(MainWindow main)
         {
             _main = main;
