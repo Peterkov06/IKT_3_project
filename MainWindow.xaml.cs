@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data.SQLite;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,8 +27,7 @@ namespace IKT_3_project
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string dbPath;
-        public Dictionary<int, IAdditionalSystem> instances = new();
+        public string dbPath, xmlPath, storyFolder;
 
         public delegate void ChangeScene(int sceneNum, object? arguments);
         public event ChangeScene ChangeSceneEvent;
@@ -58,27 +58,11 @@ namespace IKT_3_project
                 button.Click += (sender, e) => { method.Invoke(this, new object[] { sender, e }); };
                 panel.Children.Add(button);
             }
-            MainGrid.Children.Add(panel);
-
-            dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x=>x.Value).FirstOrDefault();
-            GeneratePart(1);
-            player = new(100);
-
-            var systemPaths = doc.Root.Descendants("PathLinks").Descendants("LogicSystem").ToArray();
-
-            foreach (var sytemPath in systemPaths)
-            {
-                LoadDLL(sytemPath.Attribute("Path").Value);
-            }
-
-            doc.Save(path);
-
-            player.Inventory.Add("Weapon", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
-            player.Stats.Add("Strength", 20);*/
+            MainGrid.Children.Add(panel);*/
             
         }
 
-        public void LoadDLL(string path)
+        public void LoadDLL(string path,Dictionary<int, IAdditionalSystem> additionalSystems)
         {
             Assembly loadedDLL = Assembly.LoadFrom(path);
             Type[] type = loadedDLL.GetTypes();
@@ -98,7 +82,7 @@ namespace IKT_3_project
 
                 IAdditionalSystem newSystem = (IAdditionalSystem)Activator.CreateInstance(t);
 
-                instances.Add(newSystem.GetID(), newSystem);
+                additionalSystems.Add(newSystem.GetID(), newSystem);
             }
         }
 
@@ -118,12 +102,33 @@ namespace IKT_3_project
                     if (arguments != null && arguments is LoadNewStory)
                     {
                         LoadNewStory specifiedObj = arguments as LoadNewStory;
-                        string path = specifiedObj.dbPath;
-                        OurWindow.Content = new EventsScreen(path, this);
+                        xmlPath = specifiedObj.dbPath;
+                        OurWindow.Content = new EventsScreen(this);
+                        break;
+                    }
+                    else if (arguments != null && arguments is BackToStory)
+                    {
+                        BackToStory specifiedObj = arguments as BackToStory;
+                        OurWindow.Content = new EventsScreen(this, specifiedObj);
+                        break;
                     }
                     break;
                 case 3: // Loads Fight system
-                    OurWindow.Content = new FightSystem(this);
+                    if (arguments != null && arguments is LoadFightScene)
+                    {
+                        Dictionary<int, IAdditionalSystem> additionalSystems = new();
+                        XDocument doc = XDocument.Load(xmlPath);
+                        var systemPaths = doc.Root.Descendants("PathLinks").Descendants("LogicSystem").ToArray();
+
+                        foreach (var sytemPath in systemPaths)
+                        {
+                            LoadDLL(storyFolder + "/" + sytemPath.Attribute("Path").Value, additionalSystems);
+                        }
+
+                        LoadFightScene loadFightScene = arguments as LoadFightScene;
+                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide);
+
+                    }
                     break;
             }
         }

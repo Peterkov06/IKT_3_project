@@ -69,6 +69,7 @@ namespace IKT_3_project
                 var element = Available_Stories.SelectedItem as ListBoxItem;
                 string selectedPath = element.Content.ToString();
                 _main.SceneChanger(2, new LoadNewStory(selectedPath));
+                _main.SceneChanger(3, new LoadFightScene([new Player("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Player("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [] ));
             }
         }
     }

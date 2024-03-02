@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using InterfaceClass;
 
 namespace IKT_3_project
 {
@@ -28,32 +29,44 @@ namespace IKT_3_project
         public Dictionary<int, Func<string, int, object?>> ParameterMethods = new();
         public Dictionary<int, Func<string, int, object?>> EventMethods = new();
         Player player;
-        public string dbPath;
-        public EventsScreen(Player palyer)
-        {
-            InitializeComponent();
-            player = palyer;
-
-            string path = "..\\..\\..\\Launcher\\UIxml.xml";
-            XDocument doc = XDocument.Load(path);
-
-            dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
-
-            GeneratePart(1);
-
-        }
-        public EventsScreen(string xmlPath, MainWindow main)
+        ICharacter?[] teamMates;
+        public EventsScreen(MainWindow main, BackToStory state)
         {
             _main = main;
             InitializeComponent();
-            player = new(100);
+            player = state.player;
+            teamMates = state.teammates;
 
-            string path = xmlPath;
-            XDocument doc = XDocument.Load(path);
+
+            EventMethods.Add(1, GiveToPlayer);
+
+            ParameterMethods.Add(1, GetFromPlayer);
+            ParameterMethods.Add(2, GetFromDB);
+
+            GeneratePart(state.eventID);
+
+        }
+        public EventsScreen(MainWindow main)
+        {
+            _main = main;
+            InitializeComponent();
+            player = new("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new());
+
+            XDocument doc = XDocument.Load(_main.xmlPath);
 
             string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
 
-            dbPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), _dbPath);
+            _main.storyFolder = System.IO.Path.GetDirectoryName(main.xmlPath);
+
+            _main.dbPath = System.IO.Path.Combine(_main.storyFolder, _dbPath);
+
+            EventMethods.Add(1, GiveToPlayer);
+
+            ParameterMethods.Add(1, GetFromPlayer);
+            ParameterMethods.Add(2, GetFromDB);
+
+            player.Inventory.Add("Weapon", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
+            player.Stats.Add("Strength", 20);
 
             GeneratePart(1);
 
@@ -61,7 +74,7 @@ namespace IKT_3_project
         public void GeneratePart(int ind)
         {
             MainGrid.Children.Clear();
-            string connString = $"Data Source={dbPath};Version=3;";
+            string connString = $"Data Source={_main.dbPath};Version=3;";
             using (SQLiteConnection conn = new SQLiteConnection(connString))
             {
                 conn.Open();

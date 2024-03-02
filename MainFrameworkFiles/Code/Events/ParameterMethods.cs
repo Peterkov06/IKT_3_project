@@ -17,7 +17,7 @@ namespace IKT_3_project
                 switch (method)
                 {
                     case 1:
-                        return player.HP;
+                        return player.CurrentHP;
                     case 2:
                         if (player.Buffs.ContainsKey(key))
                         {
@@ -35,7 +35,7 @@ namespace IKT_3_project
 
         public object? GetFromDB(string key, int method) // Get data out from the DB
         {
-            string connString = $"Data Source={dbPath};Version=3;";
+            string connString = $"Data Source={_main.dbPath};Version=3;";
             using (SQLiteConnection conn = new SQLiteConnection(connString))
             {
                 conn.Open();

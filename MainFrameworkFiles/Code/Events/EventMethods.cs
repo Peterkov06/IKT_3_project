@@ -16,7 +16,7 @@ namespace IKT_3_project
             switch (method)
             {
                 case 1:
-                    player.HP += Convert.ToInt32(key);
+                    player.CurrentHP += Convert.ToInt32(key);
                     return null;
                 case 2:
                     //To be implemented: Stat adding

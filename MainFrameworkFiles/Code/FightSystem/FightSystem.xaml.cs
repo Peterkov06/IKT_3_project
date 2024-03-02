@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InterfaceClass;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,11 +22,21 @@ namespace IKT_3_project
     public partial class FightSystem : UserControl
     {
         MainWindow _main;
-        Player player = new(100);
-        public FightSystem(MainWindow main)
+        ICharacter?[] playerSide;
+        ICharacter?[] enemySide;
+
+        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide)
         {
             _main = main;
             InitializeComponent();
+            this.playerSide = playerSide;
+            this.enemySide = enemySide;
+            ReturnToStory();
+            
+        }
+        public void ReturnToStory()
+        {
+            _main.SceneChanger(2, new BackToStory(playerSide[0] as Player, playerSide, 2));
         }
     }
 }
