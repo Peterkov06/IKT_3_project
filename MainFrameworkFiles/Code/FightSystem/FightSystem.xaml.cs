@@ -21,22 +21,23 @@ namespace IKT_3_project
     /// </summary>
     public partial class FightSystem : UserControl
     {
-        MainWindow _main;
-        ICharacter?[] playerSide;
-        ICharacter?[] enemySide;
+        MainWindow _main; // main window
+        List<ICharacter?> playerSide; // A list that stores the player's team
+        List<ICharacter?> enemySide; // A list that stores the enemy team
+        public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other things
 
-        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide)
+        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys)
         {
-            _main = main;
             InitializeComponent();
-            this.playerSide = playerSide;
-            this.enemySide = enemySide;
-            ReturnToStory();
-            
+            _main = main;
+            this.playerSide = [.. playerSide];
+            this.enemySide = [.. enemySide];
+            this.additionalSystems = addSys;
+
         }
-        public void ReturnToStory()
+        public void ReturnToStory() // Returns to the story with the new data
         {
-            _main.SceneChanger(2, new BackToStory(playerSide[0] as Player, playerSide, 2));
+            _main.SceneChanger(2, new BackToStory(playerSide[0] as Character, [.. playerSide], 2));
         }
     }
 }

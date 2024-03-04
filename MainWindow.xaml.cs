@@ -86,8 +86,6 @@ namespace IKT_3_project
             }
         }
 
-        
-
         public void SceneChanger(int num, object? arguments)
         {
             switch (num)
@@ -96,7 +94,7 @@ namespace IKT_3_project
                     OurWindow.Content = new MainMenu(this);
                     break;
                 case 1: // Loads Character customizer
-                    OurWindow.Content = new CharacterCustomizer(this);
+                    OurWindow.Content = new CharacterCustomizer(this, new LoadCharacterCreatorObj(["Fighter", "Wizard", "Monk"], ["Ork", "High-elf", "Goblin", "Human"], ["Strength", "Dexterity", "Intelligance"]));
                     break;
                 case 2: // Loads Events
                     if (arguments != null && arguments is LoadNewStory)
@@ -104,13 +102,11 @@ namespace IKT_3_project
                         LoadNewStory specifiedObj = arguments as LoadNewStory;
                         xmlPath = specifiedObj.dbPath;
                         OurWindow.Content = new EventsScreen(this);
-                        break;
                     }
                     else if (arguments != null && arguments is BackToStory)
                     {
                         BackToStory specifiedObj = arguments as BackToStory;
                         OurWindow.Content = new EventsScreen(this, specifiedObj);
-                        break;
                     }
                     break;
                 case 3: // Loads Fight system
@@ -126,7 +122,7 @@ namespace IKT_3_project
                         }
 
                         LoadFightScene loadFightScene = arguments as LoadFightScene;
-                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide);
+                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide, additionalSystems);
 
                     }
                     break;

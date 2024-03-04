@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace IKT_3_project
 {
-    public class Player: ICharacter
+    public class Character: ICharacter // Character object
     {
         public string Name { get; set; }
         public string Class { get; set; }
@@ -20,7 +20,7 @@ namespace IKT_3_project
         public Dictionary<string, int> Buffs { get; set; }
         public Dictionary<string, Dictionary<string, int>> Inventory { get; set; }
 
-        public Player(string name, string @class, string race, int level, int maxHP, Dictionary<string, int> stats, Dictionary<string, int> buffs, Dictionary<string, Dictionary<string, int>> inventory)
+        public Character(string name, string @class, string race, int level, int maxHP, Dictionary<string, int> stats, Dictionary<string, int> buffs, Dictionary<string, Dictionary<string, int>> inventory)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Class = @class ?? throw new ArgumentNullException(nameof(@class));
@@ -59,6 +59,7 @@ namespace IKT_3_project
         }
     }
 
+
     public class LoadNewStory
     {
         public string dbPath;
@@ -71,11 +72,11 @@ namespace IKT_3_project
 
     public class BackToStory
     {
-        public Player player;
+        public Character player;
         public ICharacter?[] teammates;
         public int eventID;
 
-        public BackToStory(Player palyer, ICharacter?[] teammates, int eventID)
+        public BackToStory(Character palyer, ICharacter?[] teammates, int eventID)
         {
             this.player = palyer ?? throw new ArgumentNullException(nameof(palyer));
             this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
@@ -92,6 +93,20 @@ namespace IKT_3_project
         {
             this.playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
             this.enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
+        }
+    }
+
+    public class LoadCharacterCreatorObj
+    {
+        public string[] classes;
+        public string[] races;
+        public string[] stats;
+
+        public LoadCharacterCreatorObj(string[] classes, string[] races, string[] stats)
+        {
+            this.classes = classes ?? throw new ArgumentNullException(nameof(classes));
+            this.races = races ?? throw new ArgumentNullException(nameof(races));
+            this.stats = stats ?? throw new ArgumentNullException(nameof(stats));
         }
     }
 }

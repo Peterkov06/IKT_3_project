@@ -17,6 +17,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using InterfaceClass;
+using System.Reflection.PortableExecutable;
+using System.Data.Entity.Core.Metadata.Edm;
 
 namespace IKT_3_project
 {
@@ -28,7 +30,7 @@ namespace IKT_3_project
         MainWindow _main;
         public Dictionary<int, Func<string, int, object?>> ParameterMethods = new();
         public Dictionary<int, Func<string, int, object?>> EventMethods = new();
-        Player player;
+        Character player;
         ICharacter?[] teamMates;
         public EventsScreen(MainWindow main, BackToStory state)
         {
@@ -43,6 +45,8 @@ namespace IKT_3_project
             ParameterMethods.Add(1, GetFromPlayer);
             ParameterMethods.Add(2, GetFromDB);
 
+            EnemyConstructor(1);
+
             GeneratePart(state.eventID);
 
         }
@@ -51,6 +55,7 @@ namespace IKT_3_project
             _main = main;
             InitializeComponent();
             player = new("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new());
+            teamMates = [];
 
             XDocument doc = XDocument.Load(_main.xmlPath);
 
@@ -68,9 +73,13 @@ namespace IKT_3_project
             player.Inventory.Add("Weapon", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
             player.Stats.Add("Strength", 20);
 
+            LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
+            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("enemy2", "fesfg", "fwf3w", 3, 500, new(), new(), new())])); };
+
             GeneratePart(1);
 
         }
+
         public void GeneratePart(int ind)
         {
             MainGrid.Children.Clear();
@@ -184,6 +193,59 @@ namespace IKT_3_project
                     }
                 }
             }
+        }
+
+        public ICharacter[] EnemyConstructor(int combatID)
+        {
+            List<ICharacter> enemies = new List<ICharacter>();
+            string connString = $"Data Source={_main.dbPath};Version=3;";
+            string json = "";
+            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            {
+                conn.Open();
+                string sqlComm = $"SELECT enemies, win_part FROM CombatSituations Where id = {combatID}";
+                using (SQLiteCommand cmd = new(sqlComm, conn))
+                {
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            json = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            JArray enemyArray = JArray.Parse(json);
+
+            foreach (JObject enemyType in enemyArray)
+            {
+                string[] enemyTypeNumStrg = enemyType.Properties().Select(p => p.Name).ToArray();
+                for (int i = 0; i < (int)enemyType[enemyTypeNumStrg[0]]; i++) 
+                {
+                    using (SQLiteConnection conn = new SQLiteConnection(connString))
+                    {
+                        conn.Open();
+                        string sqlComm = $"SELECT * FROM Enemies Where id = {enemyTypeNumStrg[0]}";
+                        using (SQLiteCommand cmd = new(sqlComm, conn))
+                        {
+                            using (SQLiteDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    var allEnemyAttributes = reader.GetValues();
+                                    var statsObj = JObject.Parse(allEnemyAttributes[7]);
+                                    var inventoryObj = JObject.Parse(allEnemyAttributes[8]);
+                                    var stats = statsObj.ToObject<Dictionary<string, int>>();
+                                    var inventory = inventoryObj.ToObject<Dictionary<string, Dictionary<string, int>>>();
+
+                                    enemies.Add(new Character(allEnemyAttributes[1], allEnemyAttributes[2], allEnemyAttributes[3], Convert.ToInt32(allEnemyAttributes[4]), Convert.ToInt32(allEnemyAttributes[5]), stats, [], inventory));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return enemies.ToArray();
         }
     }
 }

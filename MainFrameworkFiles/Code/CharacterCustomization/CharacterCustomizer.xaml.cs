@@ -21,10 +21,16 @@ namespace IKT_3_project
     public partial class CharacterCustomizer : UserControl
     {
         MainWindow _main;
-        public CharacterCustomizer(MainWindow main)
+        public string[] classes; // The choosable classes array
+        public string[] races; // The choosable races array
+        public string[] stats; // The array of stats that has to be assigned a value to (like Dexterity: 5)
+        public CharacterCustomizer(MainWindow main, LoadCharacterCreatorObj choosableOptions)
         {
             _main = main;
             InitializeComponent();
+            classes = choosableOptions.classes;
+            races = choosableOptions.races;
+            stats = choosableOptions.stats;
         }
     }
 }
