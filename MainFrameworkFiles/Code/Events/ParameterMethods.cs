@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using InterfaceClass;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -19,9 +20,9 @@ namespace IKT_3_project
                     case 1:
                         return player.CurrentHP;
                     case 2:
-                        if (player.Buffs.ContainsKey(key))
+                        if (player.Buffs.TryGetValue(key, out int value))
                         {
-                            return player.Stats[key] + player.Buffs[key];
+                            return player.Stats[key] + value;
                         }
                         return player.Stats[key];
                     case 3:
@@ -64,26 +65,69 @@ namespace IKT_3_project
                             }
                         }
                         break;
-                    case 2: // Get Enemy (for fight)
-                        sqlCommand = $"SELECT * FROM Enemies WHERE id = {key}";
-                        using (SQLiteCommand cmd = new(sqlCommand, conn))
+                }
+            }
+            return null;
+        }
+
+        public object? PlayerHas(string key, int method) // Checks if the player has sg. like in the GetFromPlayer
+        {
+            var obj = GetFromPlayer(key, method);
+            if (obj == null) return false;
+            return true;
+        }
+
+        public ICharacter[] EnemyConstructor(int combatID) // Creates enemy squad based on the db combat situation
+        {
+            List<ICharacter> enemies = new List<ICharacter>();
+            string connString = $"Data Source={_main.dbPath};Version=3;";
+            string json = "";
+            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            {
+                conn.Open();
+                string sqlComm = $"SELECT enemies, win_part FROM CombatSituations Where id = {combatID}";
+                using (SQLiteCommand cmd = new(sqlComm, conn))
+                {
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            json = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            JArray enemyArray = JArray.Parse(json);
+
+            foreach (JObject enemyType in enemyArray)
+            {
+                string[] enemyTypeNumStrg = enemyType.Properties().Select(p => p.Name).ToArray();
+                for (int i = 0; i < (int)enemyType[enemyTypeNumStrg[0]]; i++)
+                {
+                    using (SQLiteConnection conn = new SQLiteConnection(connString))
+                    {
+                        conn.Open();
+                        string sqlComm = $"SELECT * FROM Enemies Where id = {enemyTypeNumStrg[0]}";
+                        using (SQLiteCommand cmd = new(sqlComm, conn))
                         {
                             using (SQLiteDataReader reader = cmd.ExecuteReader())
                             {
                                 while (reader.Read())
                                 {
-                                    JObject statsJO = JObject.Parse(reader.GetString(7));
-                                    Dictionary<string, int> stats = statsJO.ToObject<Dictionary<string, int>>();
-                                    JObject inventoryJO = JObject.Parse(reader.GetString(8));
-                                    Dictionary<string, Dictionary<string, int>> inventory = inventoryJO.ToObject<Dictionary<string, Dictionary<string, int>>>();
-                                    return new { Name = reader.GetString(1), Class = reader.GetString(2), Race = reader.GetString(3), Level = reader.GetInt32(4), MaxHP = reader.GetInt32(5), CurrentHP = reader.GetInt32(6), Stats = stats, Inventory = inventory };
+                                    var allEnemyAttributes = reader.GetValues();
+                                    var statsObj = JObject.Parse(allEnemyAttributes[7]);
+                                    var inventoryObj = JObject.Parse(allEnemyAttributes[8]);
+                                    var stats = statsObj.ToObject<Dictionary<string, int>>();
+                                    var inventory = inventoryObj.ToObject<Dictionary<string, Dictionary<string, int>>>();
+
+                                    enemies.Add(new Character(allEnemyAttributes[1], allEnemyAttributes[2], allEnemyAttributes[3], Convert.ToInt32(allEnemyAttributes[4]), Convert.ToInt32(allEnemyAttributes[5]), stats, [], inventory));
                                 }
                             }
-                            break;
                         }
+                    }
                 }
             }
-            return null;
+            return enemies.ToArray();
         }
     }
 }

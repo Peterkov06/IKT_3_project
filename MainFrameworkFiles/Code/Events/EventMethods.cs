@@ -56,5 +56,11 @@ namespace IKT_3_project
             }
             return null;
         }
+
+        public object? StartFight(int id) // Starts the fight system
+        {
+            _main.SceneChanger(3, new LoadFightScene([player, new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("enemy2", "fesfg", "fwf3w", 3, 500, new(), new(), new())]));
+            return null;
+        }
     }
 }
