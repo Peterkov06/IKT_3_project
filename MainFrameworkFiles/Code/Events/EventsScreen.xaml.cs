@@ -40,12 +40,17 @@ namespace IKT_3_project
             teamMates = state.teammates;
 
 
-            EventMethods.Add(1, GiveToPlayer);
+            EventMethods.Add(1, StartFight);
+            EventMethods.Add(2, GiveHPToPlayer);
+            EventMethods.Add(3, GiveStatToPlayer);
+            EventMethods.Add(4, GiveItemToPlayer);
+            EventMethods.Add(5, GiveBuffToPlayer);
 
-            ParameterMethods.Add(1, GetFromPlayer);
-            ParameterMethods.Add(2, GetFromDB);
-
-            EnemyConstructor(1);
+            ParameterMethods.Add(1, GetHPFromPlayer);
+            ParameterMethods.Add(2, GetStatFromPlayer);
+            ParameterMethods.Add(3, GetItemFromPlayer);
+            ParameterMethods.Add(4, GetFromDB);
+            ParameterMethods.Add(5, PlayerHas);
 
             GeneratePart(state.eventID);
 
@@ -65,17 +70,23 @@ namespace IKT_3_project
 
             _main.dbPath = System.IO.Path.Combine(_main.storyFolder, _dbPath);
 
-            EventMethods.Add(1, GiveToPlayer);
+            EventMethods.Add(1, StartFight);
+            EventMethods.Add(2, GiveHPToPlayer);
+            EventMethods.Add(3, GiveStatToPlayer);
+            EventMethods.Add(4, GiveItemToPlayer);
+            EventMethods.Add(5, GiveBuffToPlayer);
 
-            ParameterMethods.Add(1, GetFromPlayer);
-            ParameterMethods.Add(2, GetFromDB);
-            ParameterMethods.Add(3, PlayerHas);
+            ParameterMethods.Add(1, GetHPFromPlayer);
+            ParameterMethods.Add(2, GetStatFromPlayer);
+            ParameterMethods.Add(3, GetItemFromPlayer);
+            ParameterMethods.Add(4, GetFromDB);
+            ParameterMethods.Add(5, PlayerHas);
 
-            player.Inventory.Add("Weapon", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
+            player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
             player.Stats.Add("Strength", 20);
 
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
-            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("enemy2", "fesfg", "fwf3w", 3, 500, new(), new(), new())])); };
+            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("enemy2", "fesfg", "fwf3w", 3, 500, new(), new(), new())], 2)); };
 
             GeneratePart(1);
 
@@ -138,52 +149,13 @@ namespace IKT_3_project
                                     {
                                         try
                                         {
-                                            //MessageBox.Show($"{json}");
-                                            /*JObject jsObj = JsonConvert.DeserializeObject<JObject>(json);
-                                            IEnumerable<string> keys = jsObj.Properties().Select(p => p.Name);*/
-                                            EventMethods[1].Invoke(json,methodNum);
-                                        }
+                                            EventMethods[methodNum].Invoke(json,methodNum);
 
-                                        /*List<object> parameters = new();
-                                        foreach (string key in keys) // All keys in the object (the different kind of parameters getter method id)
-                                        {
-                                            if (jsObj[key].Type == JTokenType.Array) // If the parameter argument is an array of requests
+                                            if (next_id != null)
                                             {
-                                                foreach (var value in jsObj[key]) // Value = array element
-                                                {
-                                                    if (value.Type == JTokenType.Object) // If the value is an object
-                                                    {
-                                                        JObject keyValuePairs = value as JObject; // Set it as one
-                                                        string[] elementProps = keyValuePairs.Properties().Select(p => p.Name).ToArray(); // Keys in the object (MUST be 1), the name of the obj (like sword)
-                                                        if (value[elementProps[0]].Type == JTokenType.Array) // If the required object has multiple properties (like damage)
-                                                        {
-                                                            foreach (var itemProp in value[elementProps[0]])
-                                                            {
-                                                                Dictionary<string, int> item = (Dictionary<string, int>)ParameterMethods[1](elementProps[0], Convert.ToInt32(key));
-                                                                MessageBox.Show($"Got back: ({elementProps[0]}) ({(string)itemProp}) {item[(string)itemProp]}");
-                                                                parameters.Add(item[(string)itemProp]);
-                                                            }
-                                                        }
-                                                    }
-                                                    else if (value.Type == JTokenType.String) // If the array only contains property names
-                                                    {
-                                                        MessageBox.Show($"Got back: ({value}) {ParameterMethods[1]((string)value, Convert.ToInt32(key))}");
-                                                        parameters.Add(ParameterMethods[1]((string)value, Convert.ToInt32(key)));
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                MessageBox.Show($"Got back: ({(string)jsObj[key]}) {ParameterMethods[1]((string)jsObj[key], Convert.ToInt32(key))}");
-                                                parameters.Add(ParameterMethods[1]((string)jsObj[key], Convert.ToInt32(key)));
+                                                GeneratePart((int)next_id);
                                             }
                                         }
-
-                                        if (next_id != null)
-                                        {
-                                            GeneratePart((int)next_id);
-                                        }
-                                    }*/
                                         catch (Exception)
                                         { }
                                         //MessageBox.Show($"Player HP: {player.HP}");         

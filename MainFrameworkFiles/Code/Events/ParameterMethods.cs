@@ -6,31 +6,32 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace IKT_3_project
 {
     public partial class EventsScreen
     {
-        public object? GetFromPlayer(string key, int method) // Interaction with the player: Getting some data from "it"
+        public object? GetHPFromPlayer(string key, int method) // Interaction with the player: Getting some data from "it"
         {
-            try
+            return player.CurrentHP;
+        }
+
+        public object? GetStatFromPlayer(string key, int method)
+        {
+            if (player.Buffs.TryGetValue(key, out int value))
             {
-                switch (method)
-                {
-                    case 1:
-                        return player.CurrentHP;
-                    case 2:
-                        if (player.Buffs.TryGetValue(key, out int value))
-                        {
-                            return player.Stats[key] + value;
-                        }
-                        return player.Stats[key];
-                    case 3:
-                        return player.Inventory[key];
-                }
+                return player.Stats[key] + value;
             }
-            catch (Exception)
-            { }
+            return null;
+        }
+
+        public object? GetItemFromPlayer(string key, int method)
+        {
+            if (player.Buffs.TryGetValue(key,out int value))
+            {
+                return value;
+            }
             return null;
         }
 
@@ -72,13 +73,14 @@ namespace IKT_3_project
 
         public object? PlayerHas(string key, int method) // Checks if the player has sg. like in the GetFromPlayer
         {
-            var obj = GetFromPlayer(key, method);
+            var obj = ParameterMethods[method].Invoke(key, method);
             if (obj == null) return false;
             return true;
         }
 
-        public ICharacter[] EnemyConstructor(int combatID) // Creates enemy squad based on the db combat situation
+        public ICharacter[] EnemyConstructor(int combatID, out int nextPartID) // Creates enemy squad based on the db combat situation
         {
+            nextPartID = 0;
             List<ICharacter> enemies = new List<ICharacter>();
             string connString = $"Data Source={_main.dbPath};Version=3;";
             string json = "";
@@ -93,6 +95,7 @@ namespace IKT_3_project
                         while (reader.Read())
                         {
                             json = reader.GetString(0);
+                            nextPartID = reader.GetInt32(1);
                         }
                     }
                 }

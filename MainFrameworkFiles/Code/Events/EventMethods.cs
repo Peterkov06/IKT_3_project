@@ -11,53 +11,62 @@ namespace IKT_3_project
 {
     public partial class EventsScreen
     {
-        public object? GiveToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
+        public object? GiveHPToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
         {
-            switch (method)
+            player.CurrentHP += Convert.ToInt32(key);
+            return null;
+
+        }
+
+        public object? GiveStatToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
+        {
+            //To be implemented: Stat adding
+            JObject stat = JObject.Parse(key);
+            IEnumerable<string> keys = stat.Properties().Select(p => p.Name);
+            foreach (string keyStrg in keys)
             {
-                case 1:
-                    player.CurrentHP += Convert.ToInt32(key);
-                    return null;
-                case 2:
-                    //To be implemented: Stat adding
-                    JObject stat = JsonConvert.DeserializeObject<JObject>(key);
-                    IEnumerable<string> keys = stat.Properties().Select(p => p.Name);
-                    foreach (string keyStrg in keys)
-                    {
-                        player.Stats.Add(keyStrg, (int)stat[keyStrg]);
-                    }
-                    return null;
-                case 3:
-                    //To be implemented: Inventory adding
+                player.Stats.Add(keyStrg, (int)stat[keyStrg]);
+            }
+            MessageBox.Show($"{player.Stats.Count}");
+            return null;
+        }
 
-                    JArray items = JArray.Parse(key);
+        public object? GiveItemToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
+        {
+            //To be implemented: Inventory adding WORKS
+            /*[{"LongBow": {"Damage": 4, "Endurance": 1}},{ "Sword": {"Damage":16}}]*/
+            JArray items = JArray.Parse(key);
 
-
-                    foreach (JObject item in items)
-                    {
-                        IEnumerable<string> itemName = item.Properties().Select(p => p.Name);
-                        Dictionary<string, int> dat = item[itemName.First()].ToObject<Dictionary<string, int>>();
-                        player.Inventory.Add(itemName.First(), dat);
-                    }
-                    MessageBox.Show($"{player.Inventory.Count}");
-                    return null;
-                case 4:
-                    //To be implemented: Buff adding
-                    JObject buff = JsonConvert.DeserializeObject<JObject>(key);
-                    IEnumerable<string> buffKeys = buff.Properties().Select(p => p.Name);
-                    foreach (string keyStrg in buffKeys)
-                    {
-                        player.Buffs.Add(keyStrg, (int)buff[keyStrg]);
-                    }
-                    MessageBox.Show($"{player.Buffs.Count}");
-                    return null;
+            foreach (JObject item in items)
+            {
+                IEnumerable<string> itemName = item.Properties().Select(p => p.Name);
+                Dictionary<string, int> dat = item[itemName.First()].ToObject<Dictionary<string, int>>();
+                player.Inventory.Add(itemName.First(), dat);
             }
             return null;
         }
 
-        public object? StartFight(int id) // Starts the fight system
+        public object? GiveBuffToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
         {
-            _main.SceneChanger(3, new LoadFightScene([player, new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("enemy2", "fesfg", "fwf3w", 3, 500, new(), new(), new())]));
+            //To be implemented: Buff adding WORKS
+            /*{"Strength": 20, ...}*/
+            JObject buff = JObject.Parse(key);
+            IEnumerable<string> buffKeys = buff.Properties().Select(p => p.Name);
+            foreach (string keyStrg in buffKeys)
+            {
+                player.Buffs.Add(keyStrg, (int)buff[keyStrg]);
+            }
+            return null;
+        }
+
+        public object? StartFight(string parameters, int method) // Starts the fight system
+        {;
+            int sitID = int.Parse(parameters);
+            int nextID;
+
+            var enemies = EnemyConstructor(sitID, out nextID);
+
+            _main.SceneChanger(3, new LoadFightScene([player, new Character("grgv edfws", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [.. enemies], nextID));
             return null;
         }
     }

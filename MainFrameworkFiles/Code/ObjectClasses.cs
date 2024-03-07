@@ -88,11 +88,13 @@ namespace IKT_3_project
     {
         public ICharacter?[] playerSide;
         public ICharacter?[] enemySide;
+        public int nextEventID;
 
-        public LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide)
+        public LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID)
         {
             this.playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
             this.enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
+            this.nextEventID = nextEventID;
         }
     }
 
