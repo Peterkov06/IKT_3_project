@@ -29,19 +29,17 @@ namespace IKT_3_project
                     return null;
                 case 3:
                     //To be implemented: Inventory adding
-                    JObject items = JsonConvert.DeserializeObject<JObject>(key);
-                    IEnumerable<string> itemKeys = items.Properties().Select(p => p.Name);
-                    foreach (string keyStrg in itemKeys)
+
+                    JArray items = JArray.Parse(key);
+
+
+                    foreach (JObject item in items)
                     {
-                        JObject item = (JObject)items[keyStrg];
-                        IEnumerable<string> itemData = item.Properties().Select(p => p.Name);
-                        Dictionary<string, int> dat = new Dictionary<string, int>();
-                        foreach (string dataKeyStrg in itemData)
-                        {
-                            dat.Add(dataKeyStrg, (int)item[dataKeyStrg]);
-                        }
-                        player.Inventory.Add(keyStrg, dat);
+                        IEnumerable<string> itemName = item.Properties().Select(p => p.Name);
+                        Dictionary<string, int> dat = item[itemName.First()].ToObject<Dictionary<string, int>>();
+                        player.Inventory.Add(itemName.First(), dat);
                     }
+                    MessageBox.Show($"{player.Inventory.Count}");
                     return null;
                 case 4:
                     //To be implemented: Buff adding
