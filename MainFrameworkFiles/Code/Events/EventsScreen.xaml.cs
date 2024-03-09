@@ -28,8 +28,8 @@ namespace IKT_3_project
     public partial class EventsScreen : UserControl
     {
         MainWindow _main;
-        public Dictionary<int, Func<string, int, object?>> ParameterMethods = new();
-        public Dictionary<int, Func<string, int, object?>> EventMethods = new();
+        public Dictionary<int, Func<string, int, object?>> ParameterMethods = [];
+        public Dictionary<int, Func<string, int, object?>> EventMethods = [];
         Character player;
         ICharacter?[] teamMates;
         public EventsScreen(MainWindow main, BackToStory state)
@@ -50,7 +50,9 @@ namespace IKT_3_project
             ParameterMethods.Add(2, GetStatFromPlayer);
             ParameterMethods.Add(3, GetItemFromPlayer);
             ParameterMethods.Add(4, GetFromDB);
-            ParameterMethods.Add(5, PlayerHas);
+            ParameterMethods.Add(5, GetPlayerLevel);
+            ParameterMethods.Add(6, GetPlayerClass);
+            ParameterMethods.Add(7, GetPlayerRace);
 
             GeneratePart(state.eventID);
 
@@ -59,7 +61,7 @@ namespace IKT_3_project
         {
             _main = main;
             InitializeComponent();
-            player = new("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new());
+            player = new("grg", "Fighter", "fwf3w", 20, 500, [], [], []);
             teamMates = [];
 
             XDocument doc = XDocument.Load(_main.xmlPath);
@@ -80,14 +82,16 @@ namespace IKT_3_project
             ParameterMethods.Add(2, GetStatFromPlayer);
             ParameterMethods.Add(3, GetItemFromPlayer);
             ParameterMethods.Add(4, GetFromDB);
-            ParameterMethods.Add(5, PlayerHas);
+            ParameterMethods.Add(5, GetPlayerLevel);
+            ParameterMethods.Add(6, GetPlayerClass);
+            ParameterMethods.Add(7, GetPlayerRace);
 
-            player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 } });
+            player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
             player.Stats.Add("Strength", 20);
 
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
-            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("enemy2", "fesfg", "fwf3w", 3, 500, new(), new(), new())], 2)); };
-
+            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
+            player.GetWeapon();
             GeneratePart(1);
 
         }
@@ -113,7 +117,7 @@ namespace IKT_3_project
                         }
                     }
 
-                    string sqlComm2 = $"SELECT text, next_part, method, parameters FROM Choiches Where part_id = {ind}";
+                    string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition FROM Choiches Where part_id = {ind}";
                     StackPanel panel = new StackPanel();
                     Grid.SetColumn(panel, 1);
 
@@ -123,46 +127,58 @@ namespace IKT_3_project
                         {
                             while (r2.Read())
                             {
-                                Button button = new Button
+                                bool validOption = false;
+                                if (r2.IsDBNull(4))
                                 {
-                                    Content = r2.GetString(0),
-                                    FontSize = 12,
-                                    Margin = new Thickness(5),
-                                };
-
-                                if (r2.IsDBNull(2))
-                                {
-                                    int next_id = r2.GetInt32(1);
-                                    button.Click += (sender, e) => { GeneratePart(next_id); };
+                                    validOption = true;
                                 }
                                 else
                                 {
-                                    int methodNum = Convert.ToInt32(r2.GetString(2));
-                                    int? next_id = null;
-                                    string json = r2.GetString(3);
-                                    if (!r2.IsDBNull(1))
+                                    validOption = IsValidChoice(r2.GetString(4));
+                                }
+                                if (validOption)
+                                {
+                                    Button button = new Button
                                     {
-                                        next_id = r2.GetInt32(1);
+                                        Content = r2.GetString(0),
+                                        FontSize = 12,
+                                        Margin = new Thickness(5),
+                                    };
+
+                                    if (r2.IsDBNull(2))
+                                    {
+                                        int next_id = r2.GetInt32(1);
+                                        button.Click += (sender, e) => { GeneratePart(next_id); };
+                                    }
+                                    else
+                                    {
+                                        int methodNum = Convert.ToInt32(r2.GetString(2));
+                                        int? next_id = null;
+                                        string json = r2.GetString(3);
+                                        if (!r2.IsDBNull(1))
+                                        {
+                                            next_id = r2.GetInt32(1);
+                                        }
+
+                                        button.Click += (sender, e) =>
+                                        {
+                                            try
+                                            {
+                                                EventMethods[methodNum].Invoke(json, methodNum);
+
+                                                if (next_id != null)
+                                                {
+                                                    GeneratePart((int)next_id);
+                                                }
+                                            }
+                                            catch (Exception)
+                                            { }
+                                            //MessageBox.Show($"Player HP: {player.HP}");         
+                                        };
                                     }
 
-                                    button.Click += (sender, e) =>
-                                    {
-                                        try
-                                        {
-                                            EventMethods[methodNum].Invoke(json,methodNum);
-
-                                            if (next_id != null)
-                                            {
-                                                GeneratePart((int)next_id);
-                                            }
-                                        }
-                                        catch (Exception)
-                                        { }
-                                        //MessageBox.Show($"Player HP: {player.HP}");         
-                                    };
+                                    panel.Children.Add(button);
                                 }
-
-                                panel.Children.Add(button);
                             }
                             MainGrid.Children.Add(panel);
                         }

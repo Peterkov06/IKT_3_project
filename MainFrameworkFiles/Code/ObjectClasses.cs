@@ -48,6 +48,17 @@ namespace IKT_3_project
             Application.Current.Shutdown();
         }
 
+        public object? GetWeapon() // Returns the the only weapon present in the inventory, as a dictionary, like: "{name}" : {{"MinDamage": 5} {"MaxDamage": 10} {"Weapon": 1}}
+        {
+            var weapon = Inventory.Where(item => item.Value.ContainsKey("Weapon")).ToDictionary();
+            //MessageBox.Show($"{weapon.Keys.First()}");
+            if (weapon != null)
+            {
+                return weapon;
+            }
+            return null;
+        }
+
         public int CalculateDamage()
         {
             throw new NotImplementedException();
@@ -60,55 +71,29 @@ namespace IKT_3_project
     }
 
 
-    public class LoadNewStory
+    public class LoadNewStory(string dbPath)
     {
-        public string dbPath;
-
-        public LoadNewStory(string dbPath)
-        {
-            this.dbPath = dbPath;
-        }
+        public string dbPath = dbPath;
     }
 
-    public class BackToStory
+    public class BackToStory(Character palyer, ICharacter?[] teammates, int eventID)
     {
-        public Character player;
-        public ICharacter?[] teammates;
-        public int eventID;
-
-        public BackToStory(Character palyer, ICharacter?[] teammates, int eventID)
-        {
-            this.player = palyer ?? throw new ArgumentNullException(nameof(palyer));
-            this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
-            this.eventID = eventID;
-        }
+        public Character player = palyer ?? throw new ArgumentNullException(nameof(palyer));
+        public ICharacter?[] teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
+        public int eventID = eventID;
     }
 
-    public class LoadFightScene
+    public class LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID)
     {
-        public ICharacter?[] playerSide;
-        public ICharacter?[] enemySide;
-        public int nextEventID;
-
-        public LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID)
-        {
-            this.playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
-            this.enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
-            this.nextEventID = nextEventID;
-        }
+        public ICharacter?[] playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
+        public ICharacter?[] enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
+        public int nextEventID = nextEventID;
     }
 
-    public class LoadCharacterCreatorObj
+    public class LoadCharacterCreatorObj(string[] classes, string[] races, string[] stats)
     {
-        public string[] classes;
-        public string[] races;
-        public string[] stats;
-
-        public LoadCharacterCreatorObj(string[] classes, string[] races, string[] stats)
-        {
-            this.classes = classes ?? throw new ArgumentNullException(nameof(classes));
-            this.races = races ?? throw new ArgumentNullException(nameof(races));
-            this.stats = stats ?? throw new ArgumentNullException(nameof(stats));
-        }
+        public string[] classes = classes ?? throw new ArgumentNullException(nameof(classes));
+        public string[] races = races ?? throw new ArgumentNullException(nameof(races));
+        public string[] stats = stats ?? throw new ArgumentNullException(nameof(stats));
     }
 }

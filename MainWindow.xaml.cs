@@ -62,7 +62,7 @@ namespace IKT_3_project
             
         }
 
-        public void LoadDLL(string path,Dictionary<int, IAdditionalSystem> additionalSystems)
+        public static void LoadDLL(string path, ref Dictionary<int, IAdditionalSystem> additionalSystems)
         {
             Assembly loadedDLL = Assembly.LoadFrom(path);
             Type[] type = loadedDLL.GetTypes();
@@ -112,17 +112,17 @@ namespace IKT_3_project
                 case 3: // Loads Fight system
                     if (arguments != null && arguments is LoadFightScene)
                     {
-                        Dictionary<int, IAdditionalSystem> additionalSystems = new();
+                        Dictionary<int, IAdditionalSystem> additionalSystems = [];
                         XDocument doc = XDocument.Load(xmlPath);
                         var systemPaths = doc.Root.Descendants("PathLinks").Descendants("LogicSystem").ToArray();
 
                         foreach (var sytemPath in systemPaths)
                         {
-                            LoadDLL(storyFolder + "/" + sytemPath.Attribute("Path").Value, additionalSystems);
+                            LoadDLL(storyFolder + "/" + sytemPath.Attribute("Path").Value, ref additionalSystems);
                         }
 
                         LoadFightScene loadFightScene = arguments as LoadFightScene;
-                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide, additionalSystems);
+                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide, additionalSystems, loadFightScene.nextEventID);
 
                     }
                     break;

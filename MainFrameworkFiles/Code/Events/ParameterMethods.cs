@@ -23,12 +23,12 @@ namespace IKT_3_project
             {
                 return player.Stats[key] + value;
             }
-            return null;
+            return player.Stats[key];
         }
 
         public object? GetItemFromPlayer(string key, int method)
         {
-            if (player.Buffs.TryGetValue(key,out int value))
+            if (player.Inventory.TryGetValue(key,out var value))
             {
                 return value;
             }
@@ -71,11 +71,19 @@ namespace IKT_3_project
             return null;
         }
 
-        public object? PlayerHas(string key, int method) // Checks if the player has sg. like in the GetFromPlayer
+        public object? GetPlayerLevel(string key, int method)
         {
-            var obj = ParameterMethods[method].Invoke(key, method);
-            if (obj == null) return false;
-            return true;
+            return player.Level;
+        }
+
+        public object? GetPlayerClass(string key, int method)
+        {
+            return player.Class;
+        }
+
+        public object? GetPlayerRace(string key, int method)
+        {
+            return player.Race;
         }
 
         public ICharacter[] EnemyConstructor(int combatID, out int nextPartID) // Creates enemy squad based on the db combat situation

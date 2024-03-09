@@ -24,20 +24,21 @@ namespace IKT_3_project
         MainWindow _main; // main window
         List<ICharacter?> playerSide; // A list that stores the player's team
         List<ICharacter?> enemySide; // A list that stores the enemy team
-        public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other things
+        public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other thingsű
+        int nexteventID; // The database ID of the next event after winning
 
-        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys)
+        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
         {
             InitializeComponent();
             _main = main;
             this.playerSide = [.. playerSide];
             this.enemySide = [.. enemySide];
             this.additionalSystems = addSys;
-
+            this.nexteventID = nexteventID;
         }
         public void ReturnToStory() // Returns to the story with the new data
         {
-            _main.SceneChanger(2, new BackToStory(playerSide[0] as Character, [.. playerSide], 2));
+            _main.SceneChanger(2, new BackToStory(playerSide[0] as Character, [.. playerSide], nexteventID));
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace IKT_3_project
 {
@@ -66,8 +68,53 @@ namespace IKT_3_project
 
             var enemies = EnemyConstructor(sitID, out nextID);
 
-            _main.SceneChanger(3, new LoadFightScene([player, new Character("grgv edfws", "fesfg", "fwf3w", 3, 500, new(), new(), new()), new Character("grg", "fesfg", "fwf3w", 3, 500, new(), new(), new())], [.. enemies], nextID));
+            _main.SceneChanger(3, new LoadFightScene([player, new Character("grgv edfws", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [.. enemies], nextID));
             return null;
         }
+
+        public bool IsValidChoice(string json)
+        {
+            bool isTrue = false;
+            JArray conditions = JArray.Parse(json);
+            foreach (JObject condition in conditions)
+            {
+                IEnumerable<string> keys = condition.Properties().Select(p => p.Name);
+                string key = keys.First();
+                int methodNum = (int)condition[key];
+                if (methodNum >= 5)
+                {
+                    var element = ParameterMethods[methodNum].Invoke("", methodNum);
+                    if (element != null)
+                    {
+                        if (element is int num && num >= int.Parse(key))
+                        {
+                            isTrue = true;
+                        }
+                        else if (element is string name && name == key)
+                        {
+                            isTrue = true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    var obj = ParameterMethods[methodNum].Invoke(key, methodNum);
+                    if (obj != null)
+                    {
+                        isTrue = true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return isTrue;
+        }
+
     }
 }
