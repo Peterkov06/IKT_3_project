@@ -22,14 +22,10 @@
             <Button Margin="25" Content="Play!" Click="LoadCharacterCreator"></Button>
         </StackPanel>
         <StackPanel Grid.Column="1">
-            <ListBox Margin="25">
-                <ListBoxItem>fewf</ListBoxItem>
-                <ListBoxItem>fewf</ListBoxItem>
-                <ListBoxItem>fewf</ListBoxItem>
-                <ListBoxItem>fewf</ListBoxItem>
-                <ListBoxItem>fewf</ListBoxItem>
+            <ListBox Margin="25" x:Name="Available_saves">
+
             </ListBox>
-            <Button Margin="25" Content="Play!"></Button>
+            <Button Margin="25" Content="Continue story" x:Name="ContinueStory"></Button>
         </StackPanel>
 
     </Grid>

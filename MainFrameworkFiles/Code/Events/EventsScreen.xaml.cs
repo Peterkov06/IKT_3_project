@@ -32,13 +32,14 @@ namespace IKT_3_project
         public Dictionary<int, Func<string, int, object?>> EventMethods = [];
         Character player;
         ICharacter?[] teamMates;
-        public EventsScreen(MainWindow main, BackToStory state)
+        int currentEventID = 0;
+        public EventsScreen(MainWindow main, SaveData state)
         {
             _main = main;
             InitializeComponent();
             player = state.player;
             teamMates = state.teammates;
-
+            currentEventID = state.eventID;
 
             EventMethods.Add(1, StartFight);
             EventMethods.Add(2, GiveHPToPlayer);
@@ -53,6 +54,8 @@ namespace IKT_3_project
             ParameterMethods.Add(5, GetPlayerLevel);
             ParameterMethods.Add(6, GetPlayerClass);
             ParameterMethods.Add(7, GetPlayerRace);
+
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID); };
 
             GeneratePart(state.eventID);
 
@@ -91,13 +94,15 @@ namespace IKT_3_project
 
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
             LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
-            player.GetWeapon();
+
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID); };
             GeneratePart(1);
 
         }
 
         public void GeneratePart(int ind)
         {
+            currentEventID = ind;
             MainGrid.Children.Clear();
             string connString = $"Data Source={_main.dbPath};Version=3;";
             using (SQLiteConnection conn = new SQLiteConnection(connString))

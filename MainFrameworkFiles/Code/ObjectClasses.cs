@@ -76,13 +76,6 @@ namespace IKT_3_project
         public string dbPath = dbPath;
     }
 
-    public class BackToStory(Character palyer, ICharacter?[] teammates, int eventID)
-    {
-        public Character player = palyer ?? throw new ArgumentNullException(nameof(palyer));
-        public ICharacter?[] teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
-        public int eventID = eventID;
-    }
-
     public class LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID)
     {
         public ICharacter?[] playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
@@ -95,5 +88,12 @@ namespace IKT_3_project
         public string[] classes = classes ?? throw new ArgumentNullException(nameof(classes));
         public string[] races = races ?? throw new ArgumentNullException(nameof(races));
         public string[] stats = stats ?? throw new ArgumentNullException(nameof(stats));
+    }
+
+    public class SaveData(Character player, ICharacter?[] teammates, int eventID)
+    {
+        public Character player = player ?? throw new ArgumentNullException(nameof(player));
+        public ICharacter?[] teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
+        public int eventID = eventID;
     }
 }

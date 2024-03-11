@@ -15,15 +15,33 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Grid x:Name="MainGrid" Grid.ColumnSpan="2">
+        <Grid Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="8*"></RowDefinition>
                 <RowDefinition></RowDefinition>
+                <RowDefinition Height="16*"></RowDefinition>
             </Grid.RowDefinitions>
+            <DockPanel Grid.Column="1" Grid.Row="0">
+                <Menu DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Top">
+                    <MenuItem Header="Playthrough">
+                        <MenuItem Header="Save" x:Name="SaveBtn">
+
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+            </DockPanel>
+            <Grid x:Name="MainGrid" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+            </Grid>
         </Grid>
         <!--FOR TESTING THE SCENES-->
         <Button Grid.Column="0" Grid.Row="1" Content="Load Character screen" Margin="8" x:Name="LoadCharaterCreator"></Button>

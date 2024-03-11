@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Launcher\" />
+    <Folder Include="SavedGames\" />
   </ItemGroup>
 
 </Project>

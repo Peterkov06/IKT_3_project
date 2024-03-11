@@ -38,7 +38,7 @@ namespace IKT_3_project
         }
         public void ReturnToStory() // Returns to the story with the new data
         {
-            _main.SceneChanger(2, new BackToStory(playerSide[0] as Character, [.. playerSide], nexteventID));
+            _main.SceneChanger(2, new SaveData(playerSide[0] as Character, [.. playerSide], nexteventID));
         }
     }
 }

@@ -24,18 +24,29 @@ namespace IKT_3_project
     {
         MainWindow _main;
         List<string> filePathgs = new List<string>();
+        List<string> saves = new List<string>();
         public MainMenu(MainWindow mainWindow)
         {
             _main = mainWindow;
             InitializeComponent();
             string path = "..\\..\\..\\Stories";
             Available_Stories.Items.Clear();
+            Available_saves.Items.Clear();
             GetStories(path);
-            foreach (var story in filePathgs)
+            GetSaves("..\\..\\..\\SavedGames\\");
+            ShowArray(filePathgs, Available_Stories);
+            ShowArray(saves, Available_saves);
+            ContinueStory.Click += (s, e) => { _main.SceneChanger(2, GameSaver.LoadGame()); };
+        }
+
+        private void ShowArray(List<string> strings,  ListBox parentElement)
+        {
+            foreach (var text in strings)
             {
-                Available_Stories.Items.Add(new ListBoxItem() { Content = $"{story}" });
+                parentElement.Items.Add(new ListBoxItem() { Content = $"{text}" });
             }
         }
+
         private void GetStories(string path)
         {
             var directories = Directory.EnumerateDirectories(path);
@@ -48,6 +59,15 @@ namespace IKT_3_project
             foreach (var file in files)
             {
                 filePathgs.Add(file);
+            }
+        }
+
+        private void GetSaves(string path)
+        {
+            var files = Directory.EnumerateFiles(path, "*.hoi4");
+            foreach (var file in files)
+            {
+                saves.Add(file);
             }
         }
 

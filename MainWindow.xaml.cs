@@ -103,9 +103,10 @@ namespace IKT_3_project
                         xmlPath = specifiedObj.dbPath;
                         OurWindow.Content = new EventsScreen(this);
                     }
-                    else if (arguments != null && arguments is BackToStory)
+                    else if (arguments != null && arguments is SaveData)
                     {
-                        BackToStory specifiedObj = arguments as BackToStory;
+                        this.dbPath = "..\\..\\..\\Stories\\TestStoryFiles\\TestStory.db";
+                        SaveData specifiedObj = arguments as SaveData;
                         OurWindow.Content = new EventsScreen(this, specifiedObj);
                     }
                     break;
