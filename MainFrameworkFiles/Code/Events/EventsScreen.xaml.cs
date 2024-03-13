@@ -41,6 +41,11 @@ namespace IKT_3_project
             teamMates = state.teammates;
             currentEventID = state.eventID;
 
+            if (_main.dbPath == null)
+            {
+                SetFilePaths();
+            }
+
             EventMethods.Add(1, StartFight);
             EventMethods.Add(2, GiveHPToPlayer);
             EventMethods.Add(3, GiveStatToPlayer);
@@ -55,7 +60,7 @@ namespace IKT_3_project
             ParameterMethods.Add(6, GetPlayerClass);
             ParameterMethods.Add(7, GetPlayerRace);
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName)); };
 
             GeneratePart(state.eventID);
 
@@ -67,13 +72,7 @@ namespace IKT_3_project
             player = new("grg", "Fighter", "fwf3w", 20, 500, [], [], []);
             teamMates = [];
 
-            XDocument doc = XDocument.Load(_main.xmlPath);
-
-            string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
-
-            _main.storyFolder = System.IO.Path.GetDirectoryName(main.xmlPath);
-
-            _main.dbPath = System.IO.Path.Combine(_main.storyFolder, _dbPath);
+            SetFilePaths();
 
             EventMethods.Add(1, StartFight);
             EventMethods.Add(2, GiveHPToPlayer);
@@ -95,9 +94,20 @@ namespace IKT_3_project
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
             LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName)); };
             GeneratePart(1);
 
+        }
+
+        private void SetFilePaths()
+        {
+            XDocument doc = XDocument.Load(_main.xmlPath);
+
+            string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
+
+            _main.storyFolder = System.IO.Path.GetDirectoryName(_main.xmlPath);
+
+            _main.dbPath = System.IO.Path.Combine(_main.storyFolder, _dbPath);
         }
 
         public void GeneratePart(int ind)

@@ -27,7 +27,7 @@ namespace IKT_3_project
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string dbPath, xmlPath, storyFolder;
+        public string dbPath, xmlPath, storyFolder, fileName;
 
         public delegate void ChangeScene(int sceneNum, object? arguments);
         public event ChangeScene ChangeSceneEvent;
@@ -105,8 +105,8 @@ namespace IKT_3_project
                     }
                     else if (arguments != null && arguments is SaveData)
                     {
-                        this.dbPath = "..\\..\\..\\Stories\\TestStoryFiles\\TestStory.db";
                         SaveData specifiedObj = arguments as SaveData;
+                        xmlPath = specifiedObj.XMLpath ?? "";
                         OurWindow.Content = new EventsScreen(this, specifiedObj);
                     }
                     break;

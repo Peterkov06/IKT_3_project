@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Windows.Controls.Primitives;
 
 namespace IKT_3_project
 {
@@ -36,7 +37,11 @@ namespace IKT_3_project
             GetSaves("..\\..\\..\\SavedGames\\");
             ShowArray(filePathgs, Available_Stories);
             ShowArray(saves, Available_saves);
-            ContinueStory.Click += (s, e) => { _main.SceneChanger(2, GameSaver.LoadGame()); };
+            ContinueStory.Click += (s, e) => {
+                var element = Available_saves.SelectedItem as ListBoxItem;
+                string selectedPath = element.Content.ToString();
+                _main.fileName = selectedPath.Split('\\').Last();
+                _main.SceneChanger(2, GameSaver.LoadGame(selectedPath)); };
         }
 
         private void ShowArray(List<string> strings,  ListBox parentElement)
@@ -88,8 +93,31 @@ namespace IKT_3_project
             {
                 var element = Available_Stories.SelectedItem as ListBoxItem;
                 string selectedPath = element.Content.ToString();
-                _main.SceneChanger(2, new LoadNewStory(selectedPath));
+                Popup enterFileName = new Popup() { IsOpen = true, Placement = PlacementMode.Center  };
+                Label text = new Label() { Content = "Gave a name to the save", FontSize=20 };
+                TextBox fileNameBox = new() { Margin = new Thickness(15), Text = $"{selectedPath.Split('\\').Last().Split('.').First()}_save001.hoi4" };
+                Button continueBtn = new Button() { Content = "Continue", Margin = new Thickness(15) };
+                continueBtn.Click += (s,e) => {
+                    
+                    if (fileNameBox.Text.Length > 0)
+                    {
+                        _main.fileName = fileNameBox.Text;
+                    }
+                    _main.SceneChanger(2, new LoadNewStory(selectedPath));
+                };
+                Button backBtn = new Button() { Content = "Back", Margin = new Thickness(15) };
+                backBtn.Click += (s,e) => { MainGrid.Children.Remove(enterFileName); };
+                Border border = new Border() { BorderBrush = new SolidColorBrush(Colors.Black), BorderThickness = new Thickness(1) };
+                StackPanel panel = new StackPanel() {Background = new SolidColorBrush(Colors.White), MinHeight=100, MinWidth=160 };
+                panel.Children.Add(text);
+                panel.Children.Add(fileNameBox);
+                panel.Children.Add(backBtn);
+                panel.Children.Add(continueBtn);
+                border.Child = panel;
+                enterFileName.Child = border;
+                MainGrid.Children.Add(enterFileName);
             }
         }
+
     }
 }

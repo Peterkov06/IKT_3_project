@@ -1,4 +1,5 @@
 ﻿using InterfaceClass;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,10 +91,29 @@ namespace IKT_3_project
         public string[] stats = stats ?? throw new ArgumentNullException(nameof(stats));
     }
 
-    public class SaveData(Character player, ICharacter?[] teammates, int eventID)
+    public class SaveData
     {
-        public Character player = player ?? throw new ArgumentNullException(nameof(player));
-        public ICharacter?[] teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
-        public int eventID = eventID;
+
+        public Character player;
+        public ICharacter?[] teammates;
+        public int eventID;
+        public string? XMLpath { get; set; }
+
+        public SaveData(Character player, ICharacter?[] teammates, int eventID)
+        {
+            this.player = player ?? throw new ArgumentNullException(nameof(player));
+            this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
+            this.eventID = eventID;
+            XMLpath = null;
+        }
+        [JsonConstructor]
+        public SaveData(Character player, ICharacter?[] teammates, int eventID, string xml)
+        {
+            this.player = player ?? throw new ArgumentNullException(nameof(player));
+            this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
+            this.eventID = eventID;
+            XMLpath = xml;
+        }
     }
+
 }

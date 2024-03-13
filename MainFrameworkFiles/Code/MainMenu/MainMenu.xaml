@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:IKT_3_project"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -16,13 +16,13 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="20">HELOO</TextBlock>
         <StackPanel Grid.Column="0">
-            <ListBox Margin="25" x:Name="Available_Stories" SelectionMode="Single">
+            <ListBox Margin="25" x:Name="Available_Stories" SelectionMode="Single" MinHeight="80">
             </ListBox>
             <Button Margin="25" Content="Import" Click="ImportDefFile" IsEnabled="False"></Button>
             <Button Margin="25" Content="Play!" Click="LoadCharacterCreator"></Button>
         </StackPanel>
         <StackPanel Grid.Column="1">
-            <ListBox Margin="25" x:Name="Available_saves">
+            <ListBox Margin="25" x:Name="Available_saves"  SelectionMode="Single" MinHeight="80">
 
             </ListBox>
             <Button Margin="25" Content="Continue story" x:Name="ContinueStory"></Button>
