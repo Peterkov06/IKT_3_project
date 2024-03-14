@@ -97,6 +97,7 @@ namespace IKT_3_project
         public Character player;
         public ICharacter?[] teammates;
         public int eventID;
+        public int[] UnusableIDs { get; set; }
         public string? XMLpath { get; set; }
 
         public SaveData(Character player, ICharacter?[] teammates, int eventID)
@@ -107,12 +108,13 @@ namespace IKT_3_project
             XMLpath = null;
         }
         [JsonConstructor]
-        public SaveData(Character player, ICharacter?[] teammates, int eventID, string xml)
+        public SaveData(Character player, ICharacter?[] teammates, int eventID, string xml, int[] unusableIDs)
         {
             this.player = player ?? throw new ArgumentNullException(nameof(player));
             this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
             this.eventID = eventID;
             XMLpath = xml;
+            UnusableIDs = unusableIDs;
         }
     }
 

@@ -33,6 +33,24 @@ namespace IKT_3_project
             string path = "..\\..\\..\\Stories";
             Available_Stories.Items.Clear();
             Available_saves.Items.Clear();
+            Available_saves.SelectionChanged += (s, e) =>
+            {
+                if (!ContinueStory.IsEnabled && Available_saves.SelectedIndex != -1)
+                {
+                    NewGameBtn.IsEnabled = false;
+                    Available_Stories.SelectedIndex = -1;
+                    ContinueStory.IsEnabled = true;
+                }
+            };
+            Available_Stories.SelectionChanged += (s, e) =>
+            {
+                if (!NewGameBtn.IsEnabled && Available_Stories.SelectedIndex != -1)
+                {
+                    ContinueStory.IsEnabled = false;
+                    Available_saves.SelectedIndex = -1;
+                    NewGameBtn.IsEnabled = true;
+                }
+            };
             GetStories(path);
             GetSaves("..\\..\\..\\SavedGames\\");
             ShowArray(filePathgs, Available_Stories);

@@ -27,7 +27,7 @@ namespace IKT_3_project
             IEnumerable<string> keys = stat.Properties().Select(p => p.Name);
             foreach (string keyStrg in keys)
             {
-                player.Stats.Add(keyStrg, (int)stat[keyStrg]);
+                player.Stats.TryAdd(keyStrg, (int)stat[keyStrg]);
             }
             MessageBox.Show($"{player.Stats.Count}");
             return null;
@@ -43,7 +43,7 @@ namespace IKT_3_project
             {
                 IEnumerable<string> itemName = item.Properties().Select(p => p.Name);
                 Dictionary<string, int> dat = item[itemName.First()].ToObject<Dictionary<string, int>>();
-                player.Inventory.Add(itemName.First(), dat);
+                player.Inventory.TryAdd(itemName.First(), dat);
             }
             return null;
         }
@@ -56,7 +56,7 @@ namespace IKT_3_project
             IEnumerable<string> buffKeys = buff.Properties().Select(p => p.Name);
             foreach (string keyStrg in buffKeys)
             {
-                player.Buffs.Add(keyStrg, (int)buff[keyStrg]);
+                player.Buffs.TryAdd(keyStrg, (int)buff[keyStrg]);
             }
             return null;
         }
@@ -72,9 +72,17 @@ namespace IKT_3_project
             return null;
         }
 
-        public bool IsValidChoice(string json)
+        public bool IsValidChoice(string json, int id)
         {
             bool isTrue = false;
+            if (_main.unavailableChoicheIDs.Contains(id))
+            {
+                return false;
+            }
+            else if (json == "")
+            {
+                return true;
+            }
             JArray conditions = JArray.Parse(json);
             foreach (JObject condition in conditions)
             {

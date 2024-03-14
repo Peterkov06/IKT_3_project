@@ -13,9 +13,9 @@ namespace IKT_3_project
 {
     public static class GameSaver
     {
-        public static void SaveGame(Character player, ICharacter[] team, int currID, string xmlPath, string filePath)
+        public static void SaveGame(Character player, ICharacter[] team, int currID, string xmlPath, string filePath, int[] unusableIDs)
         {
-            string jsonData = JsonConvert.SerializeObject(new SaveData(player, team, currID, xmlPath));
+            string jsonData = JsonConvert.SerializeObject(new SaveData(player, team, currID, xmlPath, unusableIDs));
             if (!File.Exists(filePath))
             {
                 var file = File.Create(filePath);
@@ -29,7 +29,7 @@ namespace IKT_3_project
             string jsonData = File.ReadAllText(filePath);
 
             SaveData loadedData = JsonConvert.DeserializeObject<SaveData>(jsonData);
-            return new SaveData(loadedData.player, loadedData.teammates, loadedData.eventID, loadedData.XMLpath);
+            return loadedData;
         }
     }
 }

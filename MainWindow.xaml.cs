@@ -28,6 +28,7 @@ namespace IKT_3_project
     public partial class MainWindow : Window
     {
         public string dbPath, xmlPath, storyFolder, fileName;
+        public List<int> unavailableChoicheIDs = new();
 
         public delegate void ChangeScene(int sceneNum, object? arguments);
         public event ChangeScene ChangeSceneEvent;
@@ -107,6 +108,7 @@ namespace IKT_3_project
                     {
                         SaveData specifiedObj = arguments as SaveData;
                         xmlPath = specifiedObj.XMLpath ?? "";
+                        unavailableChoicheIDs = [.. specifiedObj.UnusableIDs];
                         OurWindow.Content = new EventsScreen(this, specifiedObj);
                     }
                     break;

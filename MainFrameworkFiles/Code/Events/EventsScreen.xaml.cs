@@ -60,7 +60,7 @@ namespace IKT_3_project
             ParameterMethods.Add(6, GetPlayerClass);
             ParameterMethods.Add(7, GetPlayerRace);
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName)); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName), [.. _main.unavailableChoicheIDs]); };
 
             GeneratePart(state.eventID);
 
@@ -94,7 +94,7 @@ namespace IKT_3_project
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
             LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName)); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName), [.. _main.unavailableChoicheIDs]); };
             GeneratePart(1);
 
         }
@@ -132,7 +132,7 @@ namespace IKT_3_project
                         }
                     }
 
-                    string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition FROM Choiches Where part_id = {ind}";
+                    string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition, is_retakable FROM Choiches Where part_id = {ind}";
                     StackPanel panel = new StackPanel();
                     Grid.SetColumn(panel, 1);
 
@@ -143,13 +143,22 @@ namespace IKT_3_project
                             while (r2.Read())
                             {
                                 bool validOption = false;
-                                if (r2.IsDBNull(4))
+                                if (r2.IsDBNull(4) && r2.IsDBNull(5))
                                 {
                                     validOption = true;
                                 }
                                 else
                                 {
-                                    validOption = IsValidChoice(r2.GetString(4));
+                                    string json;
+                                    if (r2.IsDBNull(4))
+                                    {
+                                        json = "";
+                                    }
+                                    else
+                                    {
+                                        json = r2.GetString(4);
+                                    }
+                                    validOption = IsValidChoice(json, ind);
                                 }
                                 if (validOption)
                                 {
@@ -187,9 +196,15 @@ namespace IKT_3_project
                                                 }
                                             }
                                             catch (Exception)
-                                            { }
+                                            {
+                                            }
                                             //MessageBox.Show($"Player HP: {player.HP}");         
                                         };
+                                    }
+
+                                    if (!r2.IsDBNull(5))
+                                    {
+                                        button.Click += (sender, e) => { _main.unavailableChoicheIDs.Add(ind); };
                                     }
 
                                     panel.Children.Add(button);
