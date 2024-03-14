@@ -27,7 +27,7 @@ namespace IKT_3_project
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string dbPath, xmlPath, storyFolder, fileName;
+        public string dbPath, xmlPath, storyFolder, fileName, saveFolder = "..\\..\\..\\SavedGames\\", imgLibraryFile;
         public List<int> unavailableChoicheIDs = new();
 
         public delegate void ChangeScene(int sceneNum, object? arguments);
@@ -130,6 +130,13 @@ namespace IKT_3_project
                     }
                     break;
             }
+        }
+        public void ClearData()
+        {
+            dbPath = null;
+            xmlPath = null;
+            unavailableChoicheIDs.Clear();
+            fileName = null;
         }
     }
 }

@@ -19,32 +19,21 @@ namespace IKT_3_project.MainFrameworkFiles.Models
 
             public Dictionary<string, int> Stats { get; set; }
             public Dictionary<string, int> Buffs { get; set; }
-            public Dictionary<string, object> Inventory { get; set; }
+            public Dictionary<string, Dictionary<string, int>> Inventory { get; set; }
 
             public void TakeDamage(int damage);
             public void Heal(int heal);
-        }
-
-        public interface IEquippable
-        {
-            public string Name { get; set; }
-            public int UsableTimes { get; set; }
-
-            public void PickUp();
-            public void Use();
-        }
-
-        public interface IOpenable
-        {
-            public string Name { get; set; }
-
-            public void Open();
         }
 
         public interface IAdditionalSystem
         {
             public int GetID();
             public object? Execute(object[] parameters);
+        }
+
+        public interface IStoryImages
+        {
+            
         }
 
     }

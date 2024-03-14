@@ -52,7 +52,7 @@ namespace IKT_3_project
                 }
             };
             GetStories(path);
-            GetSaves("..\\..\\..\\SavedGames\\");
+            GetSaves(_main.saveFolder);
             ShowArray(filePathgs, Available_Stories);
             ShowArray(saves, Available_saves);
             ContinueStory.Click += (s, e) => {
@@ -87,7 +87,7 @@ namespace IKT_3_project
 
         private void GetSaves(string path)
         {
-            var files = Directory.EnumerateFiles(path, "*.hoi4");
+            var files = Directory.EnumerateFiles(path, "*.hoi5");
             foreach (var file in files)
             {
                 saves.Add(file);
@@ -113,7 +113,7 @@ namespace IKT_3_project
                 string selectedPath = element.Content.ToString();
                 Popup enterFileName = new Popup() { IsOpen = true, Placement = PlacementMode.Center  };
                 Label text = new Label() { Content = "Gave a name to the save", FontSize=20 };
-                TextBox fileNameBox = new() { Margin = new Thickness(15), Text = $"{selectedPath.Split('\\').Last().Split('.').First()}_save001.hoi4" };
+                TextBox fileNameBox = new() { Margin = new Thickness(15), Text = $"{selectedPath.Split('\\').Last().Split('.').First()}_save001.hoi5" };
                 Button continueBtn = new Button() { Content = "Continue", Margin = new Thickness(15) };
                 continueBtn.Click += (s,e) => {
                     

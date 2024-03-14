@@ -11,5 +11,6 @@
   <PathLinks>
     <StoryDatabase Path="TestStory.db"></StoryDatabase>
     <LogicSystem Path="TestPlugin2.dll"></LogicSystem>
+    <ImageFile Path="ImgLibrary1.dll"></ImageFile>
   </PathLinks>
 </GamePlugin>

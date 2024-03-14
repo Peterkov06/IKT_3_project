@@ -25,9 +25,12 @@
             </Grid.RowDefinitions>
             <DockPanel Grid.Column="1" Grid.Row="0">
                 <Menu DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Top">
-                    <MenuItem Header="Playthrough">
+                    <MenuItem Header="Menu">
                         <MenuItem Header="Save" x:Name="SaveBtn">
-
+                        </MenuItem>
+                        <MenuItem Header="Load" x:Name="LoadBtn">
+                        </MenuItem>
+                        <MenuItem Header="Back to main menu" x:Name="MainMenuBtn">
                         </MenuItem>
                     </MenuItem>
                 </Menu>

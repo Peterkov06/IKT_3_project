@@ -60,7 +60,11 @@ namespace IKT_3_project
             ParameterMethods.Add(6, GetPlayerClass);
             ParameterMethods.Add(7, GetPlayerRace);
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName), [.. _main.unavailableChoicheIDs]); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
+            MainMenuBtn.Click += (s, e) => {
+                _main.ClearData();
+                _main.SceneChanger(0, null);
+            };
 
             GeneratePart(state.eventID);
 
@@ -94,7 +98,11 @@ namespace IKT_3_project
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
             LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine("..\\..\\..\\SavedGames\\", main.fileName), [.. _main.unavailableChoicheIDs]); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
+            MainMenuBtn.Click += (s, e) => {
+                _main.ClearData();
+                _main.SceneChanger(0, null);
+            };
             GeneratePart(1);
 
         }
@@ -104,10 +112,13 @@ namespace IKT_3_project
             XDocument doc = XDocument.Load(_main.xmlPath);
 
             string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
+            string _imgLib = doc.Root.Descendants("PathLinks").Descendants("ImageFile").Attributes("Path").Select(x => x.Value).FirstOrDefault();
 
             _main.storyFolder = System.IO.Path.GetDirectoryName(_main.xmlPath);
 
             _main.dbPath = System.IO.Path.Combine(_main.storyFolder, _dbPath);
+            _main.imgLibraryFile = System.IO.Path.Combine(_main.storyFolder, _imgLib);
+            MessageBox.Show($"{_main.imgLibraryFile}");
         }
 
         public void GeneratePart(int ind)
@@ -132,7 +143,7 @@ namespace IKT_3_project
                         }
                     }
 
-                    string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition, is_retakable FROM Choiches Where part_id = {ind}";
+                    string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition, is_retakable, tooltip FROM Choiches Where part_id = {ind}";
                     StackPanel panel = new StackPanel();
                     Grid.SetColumn(panel, 1);
 
@@ -168,6 +179,15 @@ namespace IKT_3_project
                                         FontSize = 12,
                                         Margin = new Thickness(5),
                                     };
+                                    if(!r2.IsDBNull(6))
+                                    {
+                                        string tooltipText = $"{r2.GetString(6)}";
+                                        ToolTip ttp = new();
+                                        ttp.Content = tooltipText;
+                                        ttp.FontSize = 14;
+                                        ttp.FontStyle = FontStyles.Italic;
+                                        button.ToolTip = ttp;
+                                    }
 
                                     if (r2.IsDBNull(2))
                                     {
