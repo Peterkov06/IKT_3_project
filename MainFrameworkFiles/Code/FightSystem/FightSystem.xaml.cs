@@ -1,4 +1,4 @@
-﻿using InterfaceClass;
+using InterfaceClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace IKT_3_project
         List<ICharacter?> enemySide; // A list that stores the enemy team
         public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other thingsű
         int nexteventID; // The database ID of the next event after winning
-
+        
         public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
         {
             InitializeComponent();
@@ -35,10 +35,28 @@ namespace IKT_3_project
             this.enemySide = [.. enemySide];
             this.additionalSystems = addSys;
             this.nexteventID = nexteventID;
+            
         }
         public void ReturnToStory() // Returns to the story with the new data
         {
             _main.SceneChanger(2, new SaveData(playerSide[0] as Character, [.. playerSide], nexteventID));
+        }
+
+
+
+
+        private void Attackbutton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        public void PlayerSide()
+        {
+            foreach (var item in playerSide)
+            {
+                Player1.Content = $"{playerSide[item].Name}";
+                
+            }
         }
     }
 }
