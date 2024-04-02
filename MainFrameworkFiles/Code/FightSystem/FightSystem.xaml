@@ -29,14 +29,14 @@
             </Grid.ColumnDefinitions>
             <Grid>
                 <StackPanel>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
+                    <Label Content="" x:Name="Player1"/>
+                    <ProgressBar Height="10" x:Name="Playerprog1"/>
+                    <Label Content="" x:Name="Player2" />
+                    <ProgressBar Height="10" x:Name="Playerprog2"/>
+                    <Label Content="" x:Name="Player3"/>
+                    <ProgressBar Height="10" x:Name="Playerprog3"/>
+                    <Label Content="" x:Name="Player4"/>
+                    <ProgressBar Height="10" x:Name="Playerprog4"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -52,13 +52,13 @@
             <Grid/>
             <Grid Grid.Column="1"/>
             <Grid Grid.Row="1">
-                <Button Content="Button" />
+                <Button Content="Defend" x:Name="Defendbutton"/>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1">
-                <Button Content="Button" />
+                <Button Content="Flee" x:Name="Fleebutton" />
             </Grid>
-            <Button Content="Button" />
-            <Button Grid.Column="1" Content="Button" />
+            <Button Content="Attack" x:Name="Attackbutton" Click="Attackbutton_Click" />
+            <Button Grid.Column="1" Content="Heal" x:Name="Healbutton"/>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
@@ -67,14 +67,14 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
-                    <Label Content="Label"/>
-                    <ProgressBar Height="10"/>
+                    <Label Content="" x:Name="Enemy1"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog1"/>
+                    <Label Content="" x:Name="Enemy2"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog2"/>
+                    <Label Content="" x:Name="Enemy3"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog3"/>
+                    <Label Content="" x:Name="Enemy4"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog4"/>
 
                 </StackPanel>
             </Grid>
