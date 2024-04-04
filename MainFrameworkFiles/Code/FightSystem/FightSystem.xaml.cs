@@ -37,7 +37,9 @@ namespace IKT_3_project
             this.additionalSystems = addSys;
             this.nexteventID = nexteventID;
             PlayerSide();
+            EnemySide();
             ToggleActionBtns();
+            ToggleEnemy();
             
         }
         public void ReturnToStory() // Returns to the story with the new data
@@ -48,9 +50,7 @@ namespace IKT_3_project
 
 
 
-        private void Attackbutton_Click(object sender, RoutedEventArgs e)
-        {
-        }
+        
 
 
         private void SelectAlly(object sender, RoutedEventArgs e)
@@ -66,6 +66,16 @@ namespace IKT_3_project
                 var label = PlayerSidePanel.FindName($"label{i}") as Label;
                 label.Content = $"{playerSide[i].Name}: {playerSide[i].Level}";
                 var progressBar = PlayerSidePanel.FindName($"Playerprog{i}") as ProgressBar;
+
+            }
+        }
+
+        public void EnemySide()
+        {
+            for (int i = 0; i < enemySide.Count; i++)
+            {
+                var label = EnemySidePanel.FindName($"Enemy{i}") as Label;
+                label.Content = $"{enemySide[i].Name}: {enemySide[i].Level}";
             }
         }
 
@@ -74,6 +84,39 @@ namespace IKT_3_project
             bool whatTO = !Attackbutton.IsEnabled;
             Attackbutton.IsEnabled = whatTO;
             Healbutton.IsEnabled = whatTO;
+            Defendbutton.IsEnabled = whatTO;
+            Fleebutton.IsEnabled = whatTO;
+            
+        }
+
+        public void ToggleEnemy()
+        {
+            bool whatTO = !Enemy1Button.IsEnabled;
+            Enemy1Button.IsEnabled = whatTO;
+            Enemy2Button.IsEnabled = whatTO;
+            Enemy3Button.IsEnabled = whatTO;
+        }
+
+        public void PlayerSelected()
+        {
+            bool whatTO = !Ally2.IsEnabled;
+            Ally1.IsEnabled = whatTO;
+            Ally2.IsEnabled = whatTO;
+            Ally3.IsEnabled = whatTO;
+            
+        }
+
+        private void Ally_Click(object sender, RoutedEventArgs e)
+        {
+            PlayerSelected();
+            ToggleActionBtns();
+        }
+
+        private void Actionbutton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleActionBtns();
+            ToggleEnemy();
+
         }
     }
 }
