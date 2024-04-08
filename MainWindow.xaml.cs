@@ -28,6 +28,7 @@ namespace IKT_3_project
     public partial class MainWindow : Window
     {
         public string dbPath, xmlPath, storyFolder, fileName, saveFolder = "..\\..\\..\\SavedGames\\", imgLibraryFile;
+        public static Assembly imagesDLL;
         public List<int> unavailableChoicheIDs = new();
 
         public delegate void ChangeScene(int sceneNum, object? arguments);
@@ -87,6 +88,13 @@ namespace IKT_3_project
             }
         }
 
+        public static void LoadImgDLL(string path)
+        {
+            Assembly loadedDLL = Assembly.LoadFrom(path);
+
+            imagesDLL = loadedDLL;
+        }
+
         public void SceneChanger(int num, object? arguments)
         {
             switch (num)
@@ -102,12 +110,14 @@ namespace IKT_3_project
                     {
                         LoadNewStory specifiedObj = arguments as LoadNewStory;
                         xmlPath = specifiedObj.dbPath;
+                        SetFilePaths();
                         OurWindow.Content = new EventsScreen(this);
                     }
                     else if (arguments != null && arguments is SaveData)
                     {
                         SaveData specifiedObj = arguments as SaveData;
                         xmlPath = specifiedObj.XMLpath ?? "";
+                        SetFilePaths();
                         unavailableChoicheIDs = [.. specifiedObj.UnusableIDs];
                         OurWindow.Content = new EventsScreen(this, specifiedObj);
                     }
@@ -131,12 +141,37 @@ namespace IKT_3_project
                     break;
             }
         }
+
+        public void SetFilePaths()
+        {
+            XDocument doc = XDocument.Load(xmlPath);
+
+            string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
+            string _imgLib = doc.Root.Descendants("PathLinks").Descendants("ImageFile").Attributes("Path").Select(x => x.Value).FirstOrDefault();
+
+            storyFolder = System.IO.Path.GetDirectoryName(xmlPath);
+
+            dbPath = System.IO.Path.Combine(storyFolder, _dbPath);
+            imgLibraryFile = System.IO.Path.Combine(storyFolder, _imgLib);
+            LoadImgDLL(imgLibraryFile);
+        }
+
+        public BitmapImage GetImageAtIndex(string name)
+        {
+            string imgpath = $"pack://application:,,,/{imagesDLL.GetName().Name};component/{name}.jpg";
+            BitmapImage bitmap = new();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(imgpath);
+            bitmap.EndInit();
+            return bitmap;
+        }
         public void ClearData()
         {
             dbPath = null;
             xmlPath = null;
             unavailableChoicheIDs.Clear();
             fileName = null;
+            imgLibraryFile = null;
         }
     }
 }

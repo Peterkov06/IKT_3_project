@@ -44,6 +44,12 @@
                     <RowDefinition Height="8*"></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
+                <Grid x:Name="TextUndIMG">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="4*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                </Grid>
             </Grid>
         </Grid>
         <!--FOR TESTING THE SCENES-->

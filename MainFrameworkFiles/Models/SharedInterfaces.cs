@@ -33,7 +33,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
 
         public interface IStoryImages
         {
-            
+
         }
 
     }

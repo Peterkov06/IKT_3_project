@@ -41,11 +41,6 @@ namespace IKT_3_project
             teamMates = state.teammates;
             currentEventID = state.eventID;
 
-            if (_main.dbPath == null)
-            {
-                SetFilePaths();
-            }
-
             EventMethods.Add(1, StartFight);
             EventMethods.Add(2, GiveHPToPlayer);
             EventMethods.Add(3, GiveStatToPlayer);
@@ -76,8 +71,6 @@ namespace IKT_3_project
             player = new("Player", "Fighter", "fwf3w", 20, 500, [], [], []);
             teamMates = [];
 
-            SetFilePaths();
-
             EventMethods.Add(1, StartFight);
             EventMethods.Add(2, GiveHPToPlayer);
             EventMethods.Add(3, GiveStatToPlayer);
@@ -107,24 +100,11 @@ namespace IKT_3_project
 
         }
 
-        private void SetFilePaths()
-        {
-            XDocument doc = XDocument.Load(_main.xmlPath);
-
-            string _dbPath = doc.Root.Descendants("PathLinks").Descendants("StoryDatabase").Attributes("Path").Select(x => x.Value).FirstOrDefault();
-            string _imgLib = doc.Root.Descendants("PathLinks").Descendants("ImageFile").Attributes("Path").Select(x => x.Value).FirstOrDefault();
-
-            _main.storyFolder = System.IO.Path.GetDirectoryName(_main.xmlPath);
-
-            _main.dbPath = System.IO.Path.Combine(_main.storyFolder, _dbPath);
-            _main.imgLibraryFile = System.IO.Path.Combine(_main.storyFolder, _imgLib);
-            MessageBox.Show($"{_main.imgLibraryFile}");
-        }
-
         public void GeneratePart(int ind)
         {
             currentEventID = ind;
             MainGrid.Children.Clear();
+            TextUndIMG.Children.Clear();
             string connString = $"Data Source={_main.dbPath};Version=3;";
             using (SQLiteConnection conn = new SQLiteConnection(connString))
             {
@@ -139,9 +119,21 @@ namespace IKT_3_project
                             WrapPanel textWrapper = new();
                             TextBlock test = new() { Text = reader.GetString(0), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(5), FontSize = 16 };
                             textWrapper.Children.Add(test);
-                            MainGrid.Children.Add(textWrapper);
+                            TextUndIMG.Children.Add(textWrapper);
                         }
                     }
+
+                    Image image = new Image();
+                    image.BeginInit();
+                    image.Source = _main.GetImageAtIndex("_e834608c-1c29-4a8f-a97f-42550dcbe26d");
+                    image.EndInit();
+                    image.Margin = new Thickness(5);
+                    image.Stretch = Stretch.Uniform;
+                    Grid.SetColumn(image, 0);
+                    Grid.SetRow(image, 1);
+
+                    TextUndIMG.Children.Add(image);
+                    MainGrid.Children.Add(TextUndIMG);
 
                     string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition, is_retakable, tooltip FROM Choiches Where part_id = {ind}";
                     StackPanel panel = new StackPanel();
