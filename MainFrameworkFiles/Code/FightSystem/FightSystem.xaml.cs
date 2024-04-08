@@ -40,6 +40,8 @@ namespace IKT_3_project
             EnemySide();
             ToggleActionBtns();
             ToggleEnemy();
+
+            
             
         }
         public void ReturnToStory() // Returns to the story with the new data
@@ -65,9 +67,13 @@ namespace IKT_3_project
             {
                 var label = PlayerSidePanel.FindName($"label{i}") as Label;
                 label.Content = $"{playerSide[i].Name}: {playerSide[i].Level}";
+                label.Visibility = Visibility.Visible;
                 var progressBar = PlayerSidePanel.FindName($"Playerprog{i}") as ProgressBar;
+                progressBar.Visibility = Visibility.Visible;
+
 
             }
+
         }
 
         public void EnemySide()
@@ -76,7 +82,22 @@ namespace IKT_3_project
             {
                 var label = EnemySidePanel.FindName($"Enemy{i}") as Label;
                 label.Content = $"{enemySide[i].Name}: {enemySide[i].Level}";
+                label.Visibility = Visibility.Visible;
+                var progressBar = EnemySidePanel.FindName($"Enemyprog{i}") as ProgressBar;
+                progressBar.Visibility= Visibility.Visible;
+                
             }
+            
+        }
+
+        public void AllyDamage()
+        {
+
+        }
+
+        public void Death()
+        {
+
         }
 
         public void ToggleActionBtns()
@@ -112,11 +133,38 @@ namespace IKT_3_project
             ToggleActionBtns();
         }
 
-        private void Actionbutton_Click(object sender, RoutedEventArgs e)
+        private void Attackbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns();
             ToggleEnemy();
+            
+            
 
         }
+        private void Defendbutton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleActionBtns();
+            PlayerSelected();
+
+        }
+        private void Healbutton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleActionBtns();
+            PlayerSelected();
+
+        }
+        private void Fleebutton_Click(object sender, RoutedEventArgs e)
+        {
+
+            ReturnToStory();
+        }
+
+        private void Damage(object sender, RoutedEventArgs e)
+        {
+
+            
+        }
+
+
     }
 }

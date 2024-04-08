@@ -19,24 +19,21 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Grid.Background>
-            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" Opacity="1"/>
-        </Grid.Background>
-        <Grid>
+        
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid>
                 <StackPanel x:Name="PlayerSidePanel">
-                    <Label Content="" x:Name="label0"/>
-                    <ProgressBar Height="10" x:Name="Playerprog0"/>
-                    <Label Content="" x:Name="label1" />
-                    <ProgressBar Height="10" x:Name="Playerprog1"/>
-                    <Label Content="" x:Name="label2"/>
-                    <ProgressBar Height="10" x:Name="Playerprog2"/>
-                    <Label Content="" x:Name="label3"/>
-                    <ProgressBar Height="10" x:Name="Playerprog4"/>
+                    <Label Content="" x:Name="label0" Visibility="Collapsed"/>
+                    <ProgressBar Height="10" x:Name="Playerprog0" Value="100"  Foreground="#FFB02506" Visibility="Collapsed"/>
+                    <Label Content="" x:Name="label1" Visibility="Collapsed"/>
+                    <ProgressBar Height="10" x:Name="Playerprog1" Foreground="#FFB02506" Value="100" Visibility="Collapsed"/>
+                    <Label Content="" x:Name="label2" Visibility="Collapsed"/>
+                    <ProgressBar Height="10" x:Name="Playerprog2" Foreground="#FFB02506" Value="100" Visibility="Collapsed"/>
+                    
                 </StackPanel>
             </Grid>
         </Grid>
@@ -52,13 +49,13 @@
             <Grid/>
             <Grid Grid.Column="1"/>
             <Grid Grid.Row="1">
-                <Button Content="Defend" x:Name="Defendbutton" Click="Actionbutton_Click"/>
+                <Button Content="Defend" x:Name="Defendbutton" Click="Defendbutton_Click"/>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1">
-                <Button Content="Flee" x:Name="Fleebutton" Click="Actionbutton_Click"/>
+                <Button Content="Flee" x:Name="Fleebutton" Click="Fleebutton_Click"/>
             </Grid>
-            <Button Content="Attack" x:Name="Attackbutton" Click="Actionbutton_Click" />
-            <Button Grid.Column="1" Content="Heal" x:Name="Healbutton" Click="Actionbutton_Click"/>
+            <Button Content="Attack" x:Name="Attackbutton" Click="Attackbutton_Click" />
+            <Button Grid.Column="1" Content="Heal" x:Name="Healbutton" Click="Healbutton_Click"/>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
@@ -67,14 +64,13 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1">
                 <StackPanel x:Name="EnemySidePanel">
-                    <Label Content="" x:Name="Enemy0"/>
-                    <ProgressBar Height="10" x:Name="Enemyprog1"/>
-                    <Label Content="" x:Name="Enemy1"/>
-                    <ProgressBar Height="10" x:Name="Enemyprog2"/>
-                    <Label Content="" x:Name="Enemy2"/>
-                    <ProgressBar Height="10" x:Name="Enemyprog3"/>
-                    <Label Content="" x:Name="Enemy3"/>
-                    <ProgressBar Height="10" x:Name="Enemyprog4"/>
+                    <Label Content="" x:Name="Enemy0" Visibility="Collapsed"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog0" Foreground="#FFB02506" Value="100" Visibility="Collapsed"/>
+                    <Label Content="" x:Name="Enemy1" Visibility="Collapsed"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog1" Foreground="#FFB02506" Value="100" Visibility="Collapsed"/>
+                    <Label Content="" x:Name="Enemy2" Visibility="Collapsed"/>
+                    <ProgressBar Height="10" x:Name="Enemyprog2" Foreground="#FFB02506" Value="100" Visibility="Collapsed"/>
+                    
 
                 </StackPanel>
             </Grid>
@@ -95,12 +91,12 @@
             <StackPanel />
             <Grid Grid.Column="1" Grid.Row="2">
                 <StackPanel>
-                    <Button Content="Ally1" x:Name="Ally1" Height="35" Click="Ally_Click"/>
+                    <Button Content="Ally1" x:Name="Ally1" Height="32" Click="Ally_Click"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <Button Content="Enemy1" x:Name="Enemy1Button" Height="35"/>
+                    <Button Content="Enemy1" x:Name="Enemy1Button" Height="32"/>
                 </StackPanel>
             </Grid>
 
@@ -120,12 +116,12 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <Button Content="Ally2" x:Name="Ally2" Height="45" Click="Ally_Click"/>
+                    <Button Content="Ally2" x:Name="Ally2" Height="42" Click="Ally_Click"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="3">
                 <StackPanel>
-                    <Button Content="Ally3" x:Name="Ally3" Height="45" Click="Ally_Click"/>
+                    <Button Content="Ally3" x:Name="Ally3" Height="43" Click="Ally_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
