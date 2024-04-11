@@ -60,7 +60,7 @@ namespace IKT_3_project
                 _main.ClearData();
                 _main.SceneChanger(0, null);
             };
-
+            ShowPlayerStats();
             GeneratePart(state.eventID);
 
         }
@@ -68,7 +68,7 @@ namespace IKT_3_project
         {
             _main = main;
             InitializeComponent();
-            player = new("Player", "Fighter", "fwf3w", 20, 500, [], [], []);
+            player = new("Player", "Fighter", "fwf3w", 20, 500, new() { { "Dexterity", 10 }, { "Intelligance", 100 } }, [], []);
             teamMates = [];
 
             EventMethods.Add(1, StartFight);
@@ -96,6 +96,7 @@ namespace IKT_3_project
                 _main.ClearData();
                 _main.SceneChanger(0, null);
             };
+            ShowPlayerStats();
             GeneratePart(1);
 
         }
@@ -226,6 +227,25 @@ namespace IKT_3_project
                         }
                     }
                 }
+            }
+        }
+
+        public void ShowPlayerStats()
+        {
+            foreach (var item in _main.statsToShow)
+            {
+                Label lbl;
+                switch (item)
+                {
+                    case "HP":
+                        lbl = new Label() { Content=$"HP: {player.CurrentHP}", FontSize=18};
+                        break;
+                    default:
+                        player.Stats.TryGetValue(item, out int value);
+                        lbl = new() { Content = $"{item}:{value}", FontSize = 18 };
+                        break;
+                }
+                PlayerStatBar.Children.Add(lbl);
             }
         }
     }

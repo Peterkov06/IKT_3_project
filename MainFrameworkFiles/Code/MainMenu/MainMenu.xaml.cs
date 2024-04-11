@@ -114,6 +114,7 @@ namespace IKT_3_project
             RefreshMainMenu();
         }
 
+        //When Importing the img of the character
         private void ImportIMG(object sender, RoutedEventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();

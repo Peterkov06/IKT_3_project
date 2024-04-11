@@ -20,21 +20,30 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="16*"></RowDefinition>
+                <RowDefinition Height="1*" MinHeight="34" MaxHeight="34"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
             </Grid.RowDefinitions>
-            <DockPanel Grid.Column="1" Grid.Row="0">
-                <Menu DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Top">
-                    <MenuItem Header="Menu">
-                        <MenuItem Header="Save" x:Name="SaveBtn">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <WrapPanel x:Name="PlayerStatBar">
+                    
+                </WrapPanel>
+                <DockPanel Grid.Column="1" Grid.Row="0">
+                    <Menu DockPanel.Dock="Top" HorizontalAlignment="Right">
+                        <MenuItem Header="Menu" Height="34">
+                            <MenuItem Header="Save" x:Name="SaveBtn">
+                            </MenuItem>
+                            <MenuItem Header="Load" x:Name="LoadBtn">
+                            </MenuItem>
+                            <MenuItem Header="Back to main menu" x:Name="MainMenuBtn">
+                            </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="Load" x:Name="LoadBtn">
-                        </MenuItem>
-                        <MenuItem Header="Back to main menu" x:Name="MainMenuBtn">
-                        </MenuItem>
-                    </MenuItem>
-                </Menu>
-            </DockPanel>
+                    </Menu>
+                </DockPanel>
+            </Grid>
             <Grid x:Name="MainGrid" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>

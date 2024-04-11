@@ -30,6 +30,7 @@ namespace IKT_3_project
         public string dbPath, xmlPath, storyFolder, fileName, saveFolder = "..\\..\\..\\SavedGames\\", imgLibraryFile;
         public static Assembly imagesDLL;
         public List<int> unavailableChoicheIDs = new();
+        public string[] statsToShow;
 
         public delegate void ChangeScene(int sceneNum, object? arguments);
         public event ChangeScene ChangeSceneEvent;
@@ -153,6 +154,7 @@ namespace IKT_3_project
 
             dbPath = System.IO.Path.Combine(storyFolder, _dbPath);
             imgLibraryFile = System.IO.Path.Combine(storyFolder, _imgLib);
+            statsToShow = doc.Root.Descendants("UI").Descendants("EventScreen").Descendants("StatBar").Attributes("Elements").Select(x => x.Value).FirstOrDefault().Split(';').ToArray();
             LoadImgDLL(imgLibraryFile);
         }
 

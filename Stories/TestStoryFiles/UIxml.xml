@@ -7,6 +7,9 @@
       <Button Name="Button3" Content="Bonaparte István" OnClick="Hello" />
       <Button Name="Button4" Content="Cook Mathias" OnClick="Hello" />
     </MainMenu>
+	<EventScreen>
+		<StatBar Elements="HP;Intelligance;Dexterity"></StatBar>
+	</EventScreen>
   </UI>
   <PathLinks>
     <StoryDatabase Path="TestStory.db"></StoryDatabase>
