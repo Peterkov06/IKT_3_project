@@ -27,7 +27,8 @@ namespace IKT_3_project
         public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other thingsű
         int nexteventID; // The database ID of the next event after winning
         int selectedAllayID;
-        
+        int selectedEnemyID;
+        int turnNumber=0;
         public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
         {
             InitializeComponent();
@@ -59,6 +60,12 @@ namespace IKT_3_project
         {
             selectedAllayID = 1;
         }
+        private void SelectEnemy(object sender, RoutedEventArgs e)
+        {
+            selectedEnemyID = 1;
+        }
+
+
 
 
         public void PlayerSide()
@@ -70,7 +77,15 @@ namespace IKT_3_project
                 label.Visibility = Visibility.Visible;
                 var progressBar = PlayerSidePanel.FindName($"Playerprog{i}") as ProgressBar;
                 progressBar.Visibility = Visibility.Visible;
-
+                var btn = FindName($"Ally{i}") as Button;
+                btn.Visibility = Visibility.Visible;
+                int val = i;
+                btn.Click += (s, e) => 
+                {
+                    selectedAllayID = val;
+                    Turn(23);
+                    
+                };
 
             }
 
@@ -85,13 +100,44 @@ namespace IKT_3_project
                 label.Visibility = Visibility.Visible;
                 var progressBar = EnemySidePanel.FindName($"Enemyprog{i}") as ProgressBar;
                 progressBar.Visibility= Visibility.Visible;
-                
+                progressBar.Maximum = enemySide[selectedEnemyID].MaxHP;
+                progressBar.Value =enemySide[selectedEnemyID].CurrentHP;
+                var btn = FindName($"EnemyButton{i}") as Button;
+                btn.Visibility=Visibility.Visible;
+                int val = i;
+                btn.Click += (s, e) =>
+                {
+                    selectedEnemyID = val;
+                    AllyDamage(selectedEnemyID);
+                    progressBar.Value = enemySide[selectedEnemyID].CurrentHP;
+                };
+
+
             }
             
         }
 
-        public void AllyDamage()
+        public void DiceRoll()
         {
+            Random r = new();
+            int checkDice = 8;
+            int Rolled = r.Next(1, checkDice);
+        }
+
+        public void AllyDamage(int enemyID)
+        {
+            int damage = 20;
+            enemySide[enemyID].TakeDamage(damage);
+
+            MessageBox.Show($"{enemySide[enemyID].MaxHP} ; {enemySide[enemyID].CurrentHP}");
+
+
+
+        }
+
+        public void Turn(int turnNumber)
+        {
+            MessageBox.Show(turnNumber.ToString());
 
         }
 
@@ -112,18 +158,18 @@ namespace IKT_3_project
 
         public void ToggleEnemy()
         {
-            bool whatTO = !Enemy1Button.IsEnabled;
-            Enemy1Button.IsEnabled = whatTO;
-            Enemy2Button.IsEnabled = whatTO;
-            Enemy3Button.IsEnabled = whatTO;
+            bool whatTO = !EnemyButton0.IsEnabled;
+            EnemyButton0.IsEnabled = whatTO;
+            EnemyButton1.IsEnabled = whatTO;
+            EnemyButton2.IsEnabled = whatTO;
         }
 
         public void PlayerSelected()
         {
-            bool whatTO = !Ally2.IsEnabled;
+            bool whatTO = !Ally0.IsEnabled;
+            Ally0.IsEnabled = whatTO;
             Ally1.IsEnabled = whatTO;
             Ally2.IsEnabled = whatTO;
-            Ally3.IsEnabled = whatTO;
             
         }
 
@@ -131,13 +177,14 @@ namespace IKT_3_project
         {
             PlayerSelected();
             ToggleActionBtns();
+            
         }
 
+        
         private void Attackbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns();
             ToggleEnemy();
-            
             
 
         }
@@ -158,13 +205,5 @@ namespace IKT_3_project
 
             ReturnToStory();
         }
-
-        private void Damage(object sender, RoutedEventArgs e)
-        {
-
-            
-        }
-
-
     }
 }
