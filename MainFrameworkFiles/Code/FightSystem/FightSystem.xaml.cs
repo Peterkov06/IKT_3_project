@@ -28,7 +28,7 @@ namespace IKT_3_project
         int nexteventID; // The database ID of the next event after winning
         int selectedAllayID;
         int selectedEnemyID;
-        int turnNumber=0;
+        bool[] allys = new bool[3];
         public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
         {
             InitializeComponent();
@@ -83,7 +83,7 @@ namespace IKT_3_project
                 btn.Click += (s, e) => 
                 {
                     selectedAllayID = val;
-                    Turn(23);
+                    
                     
                 };
 
@@ -164,18 +164,21 @@ namespace IKT_3_project
             EnemyButton2.IsEnabled = whatTO;
         }
 
-        public void PlayerSelected()
+        public void PlayerSelected(bool ally0, bool ally1, bool ally2)
         {
             bool whatTO = !Ally0.IsEnabled;
-            Ally0.IsEnabled = whatTO;
-            Ally1.IsEnabled = whatTO;
-            Ally2.IsEnabled = whatTO;
+            if(ally0)
+                Ally0.IsEnabled = whatTO;
+            if(ally1)
+                Ally1.IsEnabled = whatTO;
+            if(ally2)
+                Ally2.IsEnabled = whatTO;
             
         }
 
         private void Ally_Click(object sender, RoutedEventArgs e)
         {
-            PlayerSelected();
+            PlayerSelected(true, true, true);
             ToggleActionBtns();
             
         }
@@ -191,13 +194,13 @@ namespace IKT_3_project
         private void Defendbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns();
-            PlayerSelected();
+            PlayerSelected(true,true,true);
 
         }
         private void Healbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns();
-            PlayerSelected();
+            PlayerSelected(true, true, true);
 
         }
         private void Fleebutton_Click(object sender, RoutedEventArgs e)
