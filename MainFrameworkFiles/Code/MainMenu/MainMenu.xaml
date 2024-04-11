@@ -18,10 +18,11 @@
         <StackPanel Grid.Column="0">
             <ListBox Margin="25" x:Name="Available_Stories" SelectionMode="Single" MinHeight="80">
             </ListBox>
-            <Button Margin="25" Content="Import" Click="ImportDefFile" IsEnabled="False"></Button>
+            <Button Margin="25" Content="Import Story Folder" Click="ImportDefFile"></Button>
+            <Button Margin="25" Content="Import IMG test" Click="ImportIMG"></Button>
             <Button Margin="25" Content="Play!" Click="LoadCharacterCreator" x:Name="NewGameBtn" IsEnabled="False"></Button>
         </StackPanel>
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1" x:Name="selucaSecondus">
             <ListBox Margin="25" x:Name="Available_saves"  SelectionMode="Single" MinHeight="80">
 
             </ListBox>

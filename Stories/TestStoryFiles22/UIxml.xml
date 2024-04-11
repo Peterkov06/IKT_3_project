@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GamePlugin>
+  <UI>
+    <MainMenu>
+      <Button Name="Button1" Content="there" OnClick="Hello" />
+      <Button Name="Button2" Content="JancsiMancsi" OnClick="Hello" />
+      <Button Name="Button3" Content="Bonaparte István" OnClick="Hello" />
+      <Button Name="Button4" Content="Cook Mathias" OnClick="Hello" />
+    </MainMenu>
+  </UI>
+  <PathLinks>
+    <StoryDatabase Path="TestStory.db"></StoryDatabase>
+    <LogicSystem Path="TestPlugin2.dll"></LogicSystem>
+    <ImageFile Path="ImgLibrary1.dll"></ImageFile>
+  </PathLinks>
+</GamePlugin>

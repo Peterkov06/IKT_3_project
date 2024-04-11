@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Windows.Controls.Primitives;
+using System.Xml.Linq;
 
 namespace IKT_3_project
 {
@@ -26,13 +27,13 @@ namespace IKT_3_project
         MainWindow _main;
         List<string> filePathgs = new List<string>();
         List<string> saves = new List<string>();
+        string path = "..\\..\\..\\Stories";
         public MainMenu(MainWindow mainWindow)
         {
             _main = mainWindow;
             InitializeComponent();
-            string path = "..\\..\\..\\Stories";
-            Available_Stories.Items.Clear();
-            Available_saves.Items.Clear();
+            RefreshMainMenu();
+            
             Available_saves.SelectionChanged += (s, e) =>
             {
                 if (!ContinueStory.IsEnabled && Available_saves.SelectedIndex != -1)
@@ -51,15 +52,23 @@ namespace IKT_3_project
                     NewGameBtn.IsEnabled = true;
                 }
             };
-            GetStories(path);
-            GetSaves(_main.saveFolder);
-            ShowArray(filePathgs, Available_Stories);
-            ShowArray(saves, Available_saves);
             ContinueStory.Click += (s, e) => {
                 var element = Available_saves.SelectedItem as ListBoxItem;
                 string selectedPath = element.Content.ToString();
                 _main.fileName = selectedPath.Split('\\').Last();
                 _main.SceneChanger(2, GameSaver.LoadGame(selectedPath)); };
+        }
+
+        private void RefreshMainMenu()
+        {
+            Available_Stories.Items.Clear();
+            Available_saves.Items.Clear();
+            filePathgs.Clear();
+            saves.Clear();
+            GetStories(path);
+            GetSaves(_main.saveFolder);
+            ShowArray(filePathgs, Available_Stories);
+            ShowArray(saves, Available_saves);
         }
 
         private void ShowArray(List<string> strings,  ListBox parentElement)
@@ -96,12 +105,59 @@ namespace IKT_3_project
 
         private void ImportDefFile(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Story XML definition (*.xml)|*.xml";
-            fileDialog.DefaultDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            if (fileDialog.ShowDialog() == true)
+            OpenFolderDialog folderDialogue = new OpenFolderDialog();
+            folderDialogue.Multiselect = false;
+            if (folderDialogue.ShowDialog() == true)
             {
-                _main.SceneChanger(2, new LoadNewStory(fileDialog.FileName));
+                Directory.Move(folderDialogue.FolderName, $"..\\..\\..\\Stories\\{folderDialogue.SafeFolderName}");
+            }
+            RefreshMainMenu();
+        }
+
+        private void ImportIMG(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.Multiselect = false;
+            string b64Strg;
+            if (file.ShowDialog() == true)
+            {
+                string imgpath = file.FileName;
+                BitmapImage bitmap = new();
+                bitmap.BeginInit();
+
+                bitmap.UriSource = new Uri(imgpath);
+                bitmap.EndInit();
+                
+                using(MemoryStream ms = new MemoryStream())
+                {
+                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(ms);
+
+                    byte[] imgData = ms.ToArray();
+                    b64Strg = Convert.ToBase64String(imgData);
+                }
+
+                    byte[] imgDataBack = Convert.FromBase64String(b64Strg);
+                using (MemoryStream ms = new(imgDataBack))
+                {
+                    BitmapImage bmp = new();
+                    bmp.BeginInit();
+                    bmp.StreamSource = ms;
+                    bmp.CacheOption = BitmapCacheOption.OnLoad;
+
+                    bmp.EndInit();
+                    Image img = new Image();
+                    img.BeginInit();
+                    img.Source = bmp;
+                    img.EndInit();
+                    img.Margin = new Thickness(5);
+                    img.Stretch = Stretch.Uniform;
+                    selucaSecondus.Children.Add(img);
+
+                }
+                    
+
             }
         }
 

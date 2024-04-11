@@ -161,9 +161,16 @@ namespace IKT_3_project
             string imgpath = $"pack://application:,,,/{imagesDLL.GetName().Name};component/{name}.jpg";
             BitmapImage bitmap = new();
             bitmap.BeginInit();
-            bitmap.UriSource = new Uri(imgpath);
-            bitmap.EndInit();
-            return bitmap;
+            try
+            {
+                bitmap.UriSource = new Uri(imgpath);
+                bitmap.EndInit();
+                return bitmap;
+            }
+            catch (Exception)
+            {
+                return new BitmapImage();
+            }
         }
         public void ClearData()
         {
