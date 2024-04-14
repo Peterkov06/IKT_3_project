@@ -12,6 +12,15 @@
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="Item name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
                     <GridViewColumn Header="Item attributes" DisplayMemberBinding="{Binding Attributes}"></GridViewColumn>
+                    <GridViewColumn Header="Active weapon">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelectedWeapon}" Visibility="{Binding IsWeapon}" Click="ChangeSelectedWeapon" DataContext="{Binding}">
+
+                                </CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

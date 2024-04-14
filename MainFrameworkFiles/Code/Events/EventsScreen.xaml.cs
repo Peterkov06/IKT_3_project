@@ -88,7 +88,9 @@ namespace IKT_3_project
             ParameterMethods.Add(6, GetPlayerClass);
             ParameterMethods.Add(7, GetPlayerRace);
 
-            player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
+            player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 }, { "SelectedWeapon", 1 } });
+            player.Inventory.Add("BackPack", new Dictionary<string, int> { { "MinDamage", 10 } });
+            player.Inventory.Add("Sword", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
             player.Stats.Add("Strength", 20);
 
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };

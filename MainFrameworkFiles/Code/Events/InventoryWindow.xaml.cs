@@ -29,10 +29,27 @@ namespace IKT_3_project
 
         void ShowInevtory()
         {
+            InventoryList.Items.Clear();
             foreach (var item in Player.Inventory)
             {
                 InventoryList.Items.Add(new Item(item.Key, item.Value));
             }
+        }
+
+        private void ChangeSelectedWeapon(object sender, RoutedEventArgs e)
+        {
+            CheckBox thisCheck = sender as CheckBox;
+            if (!(bool)thisCheck.IsChecked)
+            {
+                return;
+            }
+
+            var selectedBefore = Player.GetWeapon() as Dictionary<string, Dictionary<string, int>>;
+            Player.Inventory[selectedBefore.Keys.First()].Remove("SelectedWeapon");
+
+            Item itemName = thisCheck.DataContext as Item;
+            Player.Inventory[itemName.Name].Add("SelectedWeapon", 1);
+            ShowInevtory();
         }
     }
 
@@ -40,17 +57,29 @@ namespace IKT_3_project
     {
         public string Name { get; set; }
         public string Attributes { get; set; }
+        public string IsWeapon { get; set; }
+        public bool IsSelectedWeapon { get; set; }
 
         public Item(string name, Dictionary<string, int> attributes)
         {
             Attributes = "";
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            IsWeapon = "Hidden";
+            IsSelectedWeapon = false;
             foreach (var attribute in attributes)
             {
                 if (attribute.Key != "Weapon" && attribute.Key != "SelectedWeapon")
                 {
                     Attributes += $"{attribute.Key}: {attribute.Value}, ";
                 }
+                else
+                {
+                    IsWeapon = "Visible";
+                }
+            }
+            if (attributes.ContainsKey("SelectedWeapon"))
+            {
+                IsSelectedWeapon = true;
             }
         }
     }

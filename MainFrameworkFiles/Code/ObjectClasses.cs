@@ -64,7 +64,7 @@ namespace IKT_3_project
         /// <returns>Dictionary with 1 element, which is the active weapon. If there isn't any, it returns null.</returns>
         public object? GetWeapon() // Returns the the only weapon present in the inventory, as a dictionary, like: "{name}" : {{"MinDamage": 5} {"MaxDamage": 10} {"Weapon": 1}}
         {
-            var weapon = Inventory.Where(item => item.Value.ContainsKey("Weapon")).ToDictionary();
+            var weapon = Inventory.Where(item => item.Value.ContainsKey("SelectedWeapon")).ToDictionary();
             //MessageBox.Show($"{weapon.Keys.First()}");
             if (weapon != null)
             {
