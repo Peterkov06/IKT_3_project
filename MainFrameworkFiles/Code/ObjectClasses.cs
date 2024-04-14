@@ -55,7 +55,7 @@ namespace IKT_3_project
         void Death()
         {
             MessageBox.Show("You died!");
-            Application.Current.Shutdown();
+           
         }
 
         /// <summary>

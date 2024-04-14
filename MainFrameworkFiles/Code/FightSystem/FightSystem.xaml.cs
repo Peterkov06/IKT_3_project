@@ -29,9 +29,10 @@ namespace IKT_3_project
         int nexteventID; // The database ID of the next event after winning
         int selectedAllayID;
         int selectedEnemyID;
-        bool[] allys = new bool[3];
+        List<Button> Playerbtns = new();
+        List<Button> Enemybtns = new();
         List<int> Enabled=new();
-        int turnNumber = 0;
+        int turnNumber = -1;
         public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
         {
             InitializeComponent();
@@ -40,6 +41,12 @@ namespace IKT_3_project
             this.enemySide = [.. enemySide];
             this.additionalSystems = addSys;
             this.nexteventID = nexteventID;
+            Playerbtns.Add(Ally0);
+            Playerbtns.Add(Ally1);
+            Playerbtns.Add(Ally2);
+            Enemybtns.Add(EnemyButton0);
+            Enemybtns.Add(EnemyButton1);
+            Enemybtns.Add(EnemyButton2);
             PlayerSide();
             EnemySide();
             Turn();
@@ -93,9 +100,9 @@ namespace IKT_3_project
                         Enabled.Remove(val);
                     }
                     
-                    Heal(selectedAllayID);
-                    EnemyDamage(selectedAllayID);
-                    progressBar.Value =playerSide[selectedAllayID].CurrentHP ;
+                    
+                    
+                    
                     
                 };
                
@@ -122,16 +129,26 @@ namespace IKT_3_project
                 {
                     selectedEnemyID = val;
                     if( turnNumber==1)
-                    { Enabled.Remove(val); }
+                    {
+                        Enabled.Remove(val);
+                        
+                    }
+                    else if(turnNumber==0)
+                    {
+                        AllyDamage(selectedEnemyID);
+                        progressBar.Value = enemySide[selectedEnemyID].CurrentHP;
+                        Turn();
+                    }
                     
-                    AllyDamage(selectedEnemyID);
-                    progressBar.Value = enemySide[selectedEnemyID].CurrentHP;
+                    
+                    
                 };
 
 
             }
             
         }
+
 
         
 
@@ -144,7 +161,7 @@ namespace IKT_3_project
 
         public void AllyDamage(int enemyID)
         {
-            int damage = 20;
+            int damage = 30;
             enemySide[enemyID].TakeDamage(damage);
 
         }
@@ -155,8 +172,8 @@ namespace IKT_3_project
 
             int damage = 20;
             playerSide[playerID].TakeDamage(damage);
-
-            MessageBox.Show($"{playerSide[playerID].MaxHP} ; {playerSide[playerID].CurrentHP}");
+            EnemyTurn();
+            
 
         }
         public void Heal(int playerID)// már van objclass-ba
@@ -166,46 +183,71 @@ namespace IKT_3_project
            
 
         }
-
-        public void Turn()
+        public void PopP()
         {
-            while (true)
+            for (int i = 0; i < playerSide.Count; i++)
             {
-                for (int i = 0; i < playerSide.Count; i++)
-                {
-                    Enabled.Add(i);
-
-
-                }
-                turnNumber = 0;
-                while(Enabled.Count<=3)
-                    {
-                    ToggleActionBtns();
-                    ToggleEnemy();
-                }
-                for (int i = 0; i < enemySide.Count; i++)
-                {
-                    Enabled.Add(i);
-                }
-                turnNumber = 1;
-                while (Enabled.Count>0)
-                    {
-
-                    }
+                Enabled.Add(i);
 
             }
+        }
 
+        public void EnP()
+        {
+            for (int i = 0; i < enemySide.Count; i++)
+            {
+                Enabled.Add(i);
+            }
+        }
+        public void Turn()
+        {
+          
+          if(turnNumber==-1 || turnNumber==1)
+            {
+                PopP();
+                turnNumber = 0;
+               
+            }
+          if(Enabled.Count>0)
+            {
+                PlayerSelected(true);
+                ToggleActionBtns(false);
+                ToggleEnemy(false);
+            }
+          else
+            {
+                EnemyTurn();
+            }
+            
             
 
 
 
         }
 
-        
-
-        public void ToggleActionBtns()
+        public void EnemyTurn()
         {
-            bool whatTO = !Attackbutton.IsEnabled;
+            Random r = new();
+
+            if (turnNumber == 0)
+            {
+                turnNumber = 1;
+                for (int i = 0; i < enemySide.Count; i++)
+                {
+                    selectedAllayID = r.Next(0, playerSide.Count);
+                    EnemyDamage(selectedAllayID);
+                    MessageBox.Show($"{selectedAllayID} ; {playerSide[selectedAllayID].CurrentHP}");
+                    
+                }
+                Turn();
+                
+            }
+            
+        }        
+
+        public void ToggleActionBtns(bool changedTo)
+        {
+            bool whatTO = changedTo;
             Attackbutton.IsEnabled = whatTO;
             Healbutton.IsEnabled = whatTO;
             Defendbutton.IsEnabled = whatTO;
@@ -213,54 +255,64 @@ namespace IKT_3_project
             
         }
 
-        public void ToggleEnemy()
+        public void ToggleEnemy(bool changedTo)
         {
-            bool whatTO = !EnemyButton0.IsEnabled;
-            EnemyButton0.IsEnabled = whatTO;
-            EnemyButton1.IsEnabled = whatTO;
-            EnemyButton2.IsEnabled = whatTO;
+            for (int i = 0; i < Enemybtns.Count; i++)
+            {
+                if(Enabled.Contains(i) && turnNumber == 1 || turnNumber == 0)
+                {
+                    Enemybtns[i].IsEnabled = changedTo;
+                }
+               
+            }
         }
 
-        public void PlayerSelected(bool ally0, bool ally1, bool ally2)
+        public void PlayerSelected(bool changedTo)
         {
-            bool whatTO = !Ally0.IsEnabled;
-            if(ally0)
-                Ally0.IsEnabled = whatTO;
-            if(ally1)
-                Ally1.IsEnabled = whatTO;
-            if(ally2)
-                Ally2.IsEnabled = whatTO;
-            
+            for (int i = 0; i < Playerbtns.Count; i++)
+            {
+                if (Enabled.Contains(i) && turnNumber == 0 || turnNumber == 1)
+                {
+                    Playerbtns[i].IsEnabled = changedTo;
+                }
+                
+
+            }
+
         }
 
         private void Ally_Click(object sender, RoutedEventArgs e)
         {
-            PlayerSelected(true, true, true);
-            ToggleActionBtns();
             
+            ToggleActionBtns(true);
+            PlayerSelected(false);
+
         }
 
         
         private void Attackbutton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleActionBtns();
-            ToggleEnemy();
+            ToggleActionBtns(false);
+            ToggleEnemy(true);
+          
             
             
 
         }
         private void Defendbutton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleActionBtns();
-            PlayerSelected(true,true,true);
-            
+            ToggleActionBtns(false);
+           
+            Turn();
+
 
         }
         private void Healbutton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleActionBtns();
-            PlayerSelected(true, true, true);
+            ToggleActionBtns(false);
             
+            Turn();
+
 
         }
         private void Fleebutton_Click(object sender, RoutedEventArgs e)
@@ -271,11 +323,7 @@ namespace IKT_3_project
 
         private void Enemy_click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < playerSide.Count; i++)
-            {
-                
-                ToggleEnemy();
-            }
+            
             
         }
     }
