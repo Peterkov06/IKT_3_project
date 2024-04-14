@@ -90,7 +90,7 @@ namespace IKT_3_project
 
             player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 }, { "SelectedWeapon", 1 } });
             player.Inventory.Add("BackPack", new Dictionary<string, int> { { "MinDamage", 10 } });
-            player.Inventory.Add("Sword", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
+            player.Inventory.Add("Sword22", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
             player.Stats.Add("Strength", 20);
 
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
