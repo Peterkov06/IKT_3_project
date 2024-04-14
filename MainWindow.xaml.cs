@@ -158,6 +158,11 @@ namespace IKT_3_project
             LoadImgDLL(imgLibraryFile);
         }
 
+        /// <summary>
+        /// Searches for a {name} named image file in the imported images dll, if it finds it, returns a BitmapImage.
+        /// </summary>
+        /// <param name="name">A string, conatining the name of an img (with it's type)</param>
+        /// <returns>BitmapImage</returns>
         public BitmapImage GetImageAtIndex(string name)
         {
             string imgpath = $"pack://application:,,,/{imagesDLL.GetName().Name};component/{name}.jpg";
@@ -174,6 +179,28 @@ namespace IKT_3_project
                 return new BitmapImage();
             }
         }
+
+        /// <summary>
+        /// Creates a BitmapImage out from a base64 type string, used for storing the characters' icons.
+        /// </summary>
+        /// <param name="b64">A sting, which is a base64 type</param>
+        /// <returns>BitmapImage</returns>
+        public static BitmapImage BMPimgFormB64(string b64)
+        {
+            byte[] imgDataBack = Convert.FromBase64String(b64);
+            using (MemoryStream ms = new(imgDataBack))
+            {
+                BitmapImage bmp = new();
+                bmp.BeginInit();
+                bmp.StreamSource = ms;
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+
+                bmp.EndInit();
+                return bmp;
+
+            }
+        }
+
         public void ClearData()
         {
             dbPath = null;

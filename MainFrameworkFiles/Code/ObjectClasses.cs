@@ -9,6 +9,9 @@ using System.Windows;
 
 namespace IKT_3_project
 {
+    /// <summary>
+    /// The main Character class, which is implemented by all characters.
+    /// </summary>
     public class Character: ICharacter // Character object
     {
         public string Name { get; set; }
@@ -17,9 +20,11 @@ namespace IKT_3_project
         public int Level { get; set; }
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
+
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Buffs { get; set; }
         public Dictionary<string, Dictionary<string, int>> Inventory { get; set; }
+        public string b64IconString { get; set; }
 
         public Character(string name, string @class, string race, int level, int maxHP, Dictionary<string, int> stats, Dictionary<string, int> buffs, Dictionary<string, Dictionary<string, int>> inventory)
         {
@@ -34,6 +39,10 @@ namespace IKT_3_project
             Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
         }
 
+        /// <summary>
+        /// Substracts the damage parameter from the CurrentHP.
+        /// </summary>
+        /// <param name="damage"></param>
         public void TakeDamage(int damage)
         {
             CurrentHP -= damage;
@@ -49,6 +58,10 @@ namespace IKT_3_project
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// Gets the currently active weapon and returns it as an object.
+        /// </summary>
+        /// <returns>Dictionary with 1 element, which is the active weapon. If there isn't any, it returns null.</returns>
         public object? GetWeapon() // Returns the the only weapon present in the inventory, as a dictionary, like: "{name}" : {{"MinDamage": 5} {"MaxDamage": 10} {"Weapon": 1}}
         {
             var weapon = Inventory.Where(item => item.Value.ContainsKey("Weapon")).ToDictionary();
@@ -60,14 +73,20 @@ namespace IKT_3_project
             return null;
         }
 
-        public int CalculateDamage()
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Heals the player by the health int amount. Adds it to the current health. If it exceeds the max amount, it sets the CurrentHP to MaxHP.
+        /// </summary>
+        /// <param name="heal"></param>
         public void Heal(int heal)
         {
-            CurrentHP += heal;
+            if (CurrentHP + heal !> MaxHP)
+            {
+                CurrentHP += heal;
+            }
+            else
+            {
+                CurrentHP = MaxHP;
+            }
         }
     }
 

@@ -55,6 +55,9 @@ namespace IKT_3_project
             ParameterMethods.Add(6, GetPlayerClass);
             ParameterMethods.Add(7, GetPlayerRace);
 
+            LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
+            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([player, new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
+
             SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
             MainMenuBtn.Click += (s, e) => {
                 _main.ClearData();
@@ -247,6 +250,9 @@ namespace IKT_3_project
                 }
                 PlayerStatBar.Children.Add(lbl);
             }
+            Button inventoryBtn = new() { Content = "Inventory" };
+            inventoryBtn.Click += (sender, e) => { InventoryWindow invWndw = new(ref player); invWndw.ShowDialog(); };
+            PlayerStatBar.Children.Add(inventoryBtn);
         }
     }
 }

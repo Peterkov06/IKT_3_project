@@ -8,7 +8,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
 {
     public class SharedInterfaces
     {
-        public interface ICharacter 
+        public interface ICharacter
         {
             public string Name { get; set; }
             public string Class { get; set; }
@@ -16,6 +16,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
             public int Level { get; set; }
             public int MaxHP { get; set; }
             public int CurrentHP { get; set; }
+            public string b64IconString { get; set; }
 
             public Dictionary<string, int> Stats { get; set; }
             public Dictionary<string, int> Buffs { get; set; }
