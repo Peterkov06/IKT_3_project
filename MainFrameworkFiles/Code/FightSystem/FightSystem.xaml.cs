@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -29,6 +30,8 @@ namespace IKT_3_project
         int selectedAllayID;
         int selectedEnemyID;
         bool[] allys = new bool[3];
+        List<int> Enabled=new();
+        int turnNumber = 0;
         public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
         {
             InitializeComponent();
@@ -39,8 +42,9 @@ namespace IKT_3_project
             this.nexteventID = nexteventID;
             PlayerSide();
             EnemySide();
-            ToggleActionBtns();
-            ToggleEnemy();
+            Turn();
+            
+            
 
             
             
@@ -70,6 +74,7 @@ namespace IKT_3_project
 
         public void PlayerSide()
         {
+            Random r = new Random();
             for (int i = 0; i < playerSide.Count; i++)
             {
                 var label = PlayerSidePanel.FindName($"label{i}") as Label;
@@ -83,16 +88,24 @@ namespace IKT_3_project
                 btn.Click += (s, e) => 
                 {
                     selectedAllayID = val;
+                    if (turnNumber==0)
+                    {
+                        Enabled.Remove(val);
+                    }
                     
+                    Heal(selectedAllayID);
+                    EnemyDamage(selectedAllayID);
+                    progressBar.Value =playerSide[selectedAllayID].CurrentHP ;
                     
                 };
-
+               
             }
 
         }
 
         public void EnemySide()
         {
+
             for (int i = 0; i < enemySide.Count; i++)
             {
                 var label = EnemySidePanel.FindName($"Enemy{i}") as Label;
@@ -108,6 +121,9 @@ namespace IKT_3_project
                 btn.Click += (s, e) =>
                 {
                     selectedEnemyID = val;
+                    if( turnNumber==1)
+                    { Enabled.Remove(val); }
+                    
                     AllyDamage(selectedEnemyID);
                     progressBar.Value = enemySide[selectedEnemyID].CurrentHP;
                 };
@@ -116,6 +132,8 @@ namespace IKT_3_project
             }
             
         }
+
+        
 
         public void DiceRoll()
         {
@@ -129,22 +147,61 @@ namespace IKT_3_project
             int damage = 20;
             enemySide[enemyID].TakeDamage(damage);
 
-            MessageBox.Show($"{enemySide[enemyID].MaxHP} ; {enemySide[enemyID].CurrentHP}");
-
-
-
         }
 
-        public void Turn(int turnNumber)
-        {
-            MessageBox.Show(turnNumber.ToString());
 
-        }
-
-        public void Death()
+        public void EnemyDamage(int playerID)
         {
 
+            int damage = 20;
+            playerSide[playerID].TakeDamage(damage);
+
+            MessageBox.Show($"{playerSide[playerID].MaxHP} ; {playerSide[playerID].CurrentHP}");
+
         }
+        public void Heal(int playerID)// már van objclass-ba
+        {
+            int HealRestore = 20; // Random Heal number, going to depend on the potion
+            playerSide[playerID].CurrentHP += HealRestore;
+           
+
+        }
+
+        public void Turn()
+        {
+            while (true)
+            {
+                for (int i = 0; i < playerSide.Count; i++)
+                {
+                    Enabled.Add(i);
+
+
+                }
+                turnNumber = 0;
+                while(Enabled.Count<=3)
+                    {
+                    ToggleActionBtns();
+                    ToggleEnemy();
+                }
+                for (int i = 0; i < enemySide.Count; i++)
+                {
+                    Enabled.Add(i);
+                }
+                turnNumber = 1;
+                while (Enabled.Count>0)
+                    {
+
+                    }
+
+            }
+
+            
+
+
+
+        }
+
+        
 
         public void ToggleActionBtns()
         {
@@ -189,24 +246,37 @@ namespace IKT_3_project
             ToggleActionBtns();
             ToggleEnemy();
             
+            
 
         }
         private void Defendbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns();
             PlayerSelected(true,true,true);
+            
 
         }
         private void Healbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns();
             PlayerSelected(true, true, true);
+            
 
         }
         private void Fleebutton_Click(object sender, RoutedEventArgs e)
         {
 
             ReturnToStory();
+        }
+
+        private void Enemy_click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < playerSide.Count; i++)
+            {
+                
+                ToggleEnemy();
+            }
+            
         }
     }
 }

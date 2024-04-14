@@ -96,7 +96,7 @@
             </Grid>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <Button Content="Enemy1" x:Name="EnemyButton0" Height="32" Visibility="Collapsed"/>
+                    <Button Content="Enemy1" x:Name="EnemyButton0" Height="32" Visibility="Collapsed" Click="Enemy_click"/>
                 </StackPanel>
             </Grid>
 
@@ -140,12 +140,12 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1" Grid.Row="1">
                 <StackPanel>
-                    <Button Content="Enemy2" x:Name="EnemyButton1" Height="45" Visibility="Collapsed"/>
+                    <Button Content="Enemy2" x:Name="EnemyButton1" Height="45" Visibility="Collapsed" Click="Enemy_click"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="3" Grid.Row="1">
                 <StackPanel>
-                    <Button Content="Enemy3" x:Name="EnemyButton2" Height="45" Visibility="Collapsed"/>
+                    <Button Content="Enemy3" x:Name="EnemyButton2" Height="45" Visibility="Collapsed" Click="Enemy_click"/>
                 </StackPanel>
             </Grid>
         </Grid>
