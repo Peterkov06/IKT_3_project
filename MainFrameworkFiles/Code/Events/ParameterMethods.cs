@@ -92,16 +92,17 @@ namespace IKT_3_project
             return player.Race;
         }
 
-        public ICharacter[] EnemyConstructor(int combatID, out int nextPartID) // Creates enemy squad based on the db combat situation
+        public ICharacter[] EnemyConstructor(int combatID, out int nextPartID, out int fleeID) // Creates enemy squad based on the db combat situation
         {
-            nextPartID = 0;
+            nextPartID = 0; 
+            fleeID = 0;
             List<ICharacter> enemies = new List<ICharacter>();
             string connString = $"Data Source={_main.dbPath};Version=3;";
             string json = "";
             using (SQLiteConnection conn = new SQLiteConnection(connString))
             {
                 conn.Open();
-                string sqlComm = $"SELECT enemies, win_part FROM CombatSituations Where id = {combatID}";
+                string sqlComm = $"SELECT enemies, win_part, flee_part FROM CombatSituations Where id = {combatID}";
                 using (SQLiteCommand cmd = new(sqlComm, conn))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -110,6 +111,7 @@ namespace IKT_3_project
                         {
                             json = reader.GetString(0);
                             nextPartID = reader.GetInt32(1);
+                            fleeID = reader.GetInt32(2);
                         }
                     }
                 }

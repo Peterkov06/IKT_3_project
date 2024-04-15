@@ -25,15 +25,17 @@ namespace IKT_3_project
         MainWindow _main; // main window
         List<ICharacter?> playerSide; // A list that stores the player's team [0] -> Player
         List<ICharacter?> enemySide; // A list that stores the enemy team [x] -> Enemy
-        public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other thingsű
-        int nexteventID; // The database ID of the next event after winning
+        public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other things
+        int nexteventID, fleeID; // The database ID of the next event after winning
         int selectedAllayID;
         int selectedEnemyID;
         List<Button> Playerbtns = new();
+        List<ProgressBar> playerSideBars = new();
+        List<ProgressBar> enemySideBars = new();
         List<Button> Enemybtns = new();
         List<int> Enabled=new();
         int turnNumber = -1;
-        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID)
+        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID, int fleeID)
         {
             InitializeComponent();
             _main = main;
@@ -41,6 +43,7 @@ namespace IKT_3_project
             this.enemySide = [.. enemySide];
             this.additionalSystems = addSys;
             this.nexteventID = nexteventID;
+            this.fleeID = fleeID;
             Playerbtns.Add(Ally0);
             Playerbtns.Add(Ally1);
             Playerbtns.Add(Ally2);
@@ -50,22 +53,11 @@ namespace IKT_3_project
             PlayerSide();
             EnemySide();
             Turn();
-            
-            
-
-            
-            
         }
-        public void ReturnToStory() // Returns to the story with the new data
+        public void ReturnToStory(int id) // Returns to the story with the new data
         {
-            _main.SceneChanger(2, new SaveData(playerSide[0] as Character, [.. playerSide], nexteventID));
+            _main.SceneChanger(2, new SaveData(playerSide[0] as Character, [.. playerSide], id, _main.xmlPath, _main.unavailableChoicheIDs.ToArray()));
         }
-
-
-
-
-        
-
 
         private void SelectAlly(object sender, RoutedEventArgs e)
         {
@@ -75,9 +67,6 @@ namespace IKT_3_project
         {
             selectedEnemyID = 1;
         }
-
-
-
 
         public void PlayerSide()
         {
@@ -91,6 +80,7 @@ namespace IKT_3_project
                 progressBar.Visibility = Visibility.Visible;
                 var btn = FindName($"Ally{i}") as Button;
                 btn.Visibility = Visibility.Visible;
+                playerSideBars.Add(progressBar);
                 int val = i;
                 btn.Click += (s, e) => 
                 {
@@ -98,16 +88,9 @@ namespace IKT_3_project
                     if (turnNumber==0)
                     {
                         Enabled.Remove(val);
-                    }
-                    
-                    
-                    
-                    
-                    
+                    }             
                 };
-               
             }
-
         }
 
         public void EnemySide()
@@ -122,6 +105,7 @@ namespace IKT_3_project
                 progressBar.Visibility= Visibility.Visible;
                 progressBar.Maximum = enemySide[selectedEnemyID].MaxHP;
                 progressBar.Value =enemySide[selectedEnemyID].CurrentHP;
+                enemySideBars.Add(progressBar);
                 var btn = FindName($"EnemyButton{i}") as Button;
                 btn.Visibility=Visibility.Visible;
                 int val = i;
@@ -136,21 +120,11 @@ namespace IKT_3_project
                     else if(turnNumber==0)
                     {
                         AllyDamage(selectedEnemyID);
-                        progressBar.Value = enemySide[selectedEnemyID].CurrentHP;
                         Turn();
-                    }
-                    
-                    
-                    
+                    }  
                 };
-
-
-            }
-            
+            }   
         }
-
-
-        
 
         public void DiceRoll()
         {
@@ -163,32 +137,28 @@ namespace IKT_3_project
         {
             int damage = 30;
             enemySide[enemyID].TakeDamage(damage);
-
+            UpdateHealthBar(enemyID, turnNumber);
         }
-
 
         public void EnemyDamage(int playerID)
         {
 
             int damage = 20;
             playerSide[playerID].TakeDamage(damage);
-            EnemyTurn();
-            
+            UpdateHealthBar(playerID, turnNumber);
 
+            EnemyTurn();
         }
         public void Heal(int playerID)// már van objclass-ba
         {
             int HealRestore = 20; // Random Heal number, going to depend on the potion
             playerSide[playerID].CurrentHP += HealRestore;
-           
-
         }
         public void PopP()
         {
             for (int i = 0; i < playerSide.Count; i++)
             {
                 Enabled.Add(i);
-
             }
         }
 
@@ -202,19 +172,18 @@ namespace IKT_3_project
         public void Turn()
         {
           
-          if(turnNumber==-1 || turnNumber==1)
+            if(turnNumber==-1 || turnNumber==1)
             {
                 PopP();
                 turnNumber = 0;
-               
             }
-          if(Enabled.Count>0)
+            if(Enabled.Count>0)
             {
                 PlayerSelected(true);
                 ToggleActionBtns(false);
                 ToggleEnemy(false);
             }
-          else
+            else
             {
                 EnemyTurn();
             }
@@ -286,7 +255,6 @@ namespace IKT_3_project
             
             ToggleActionBtns(true);
             PlayerSelected(false);
-
         }
 
         
@@ -294,37 +262,38 @@ namespace IKT_3_project
         {
             ToggleActionBtns(false);
             ToggleEnemy(true);
-          
-            
-            
-
         }
         private void Defendbutton_Click(object sender, RoutedEventArgs e)
         {
-            ToggleActionBtns(false);
-           
+            ToggleActionBtns(false);     
             Turn();
-
-
         }
         private void Healbutton_Click(object sender, RoutedEventArgs e)
         {
             ToggleActionBtns(false);
-            
             Turn();
-
-
         }
         private void Fleebutton_Click(object sender, RoutedEventArgs e)
         {
-
-            ReturnToStory();
+            ReturnToStory(fleeID);
         }
 
         private void Enemy_click(object sender, RoutedEventArgs e)
         {
-            
-            
+
+        }
+
+        private void UpdateHealthBar(int index, int sideAttacking)
+        {
+            switch (sideAttacking)
+            {
+                case 0:
+                    enemySideBars[index].Value = enemySide[index].CurrentHP;
+                    break;
+                case 1:
+                    playerSideBars[index].Value = playerSide[index].CurrentHP;
+                    break;
+            }
         }
     }
 }

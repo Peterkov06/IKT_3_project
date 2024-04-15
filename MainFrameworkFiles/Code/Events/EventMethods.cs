@@ -36,7 +36,6 @@ namespace IKT_3_project
         public object? GiveItemToPlayer(string key, int method) // Interaction with the player: Adding sg to "it"
         {
             //To be implemented: Inventory adding WORKS
-            /*[{"LongBow": {"Damage": 4, "Endurance": 1}},{ "Sword": {"Damage":16}}]*/
             /*[1,2]*/
             JArray items = JArray.Parse(key); // ids of objs
 
@@ -66,9 +65,9 @@ namespace IKT_3_project
             int sitID = int.Parse(parameters);
             int nextID;
 
-            var enemies = EnemyConstructor(sitID, out nextID);
+            var enemies = EnemyConstructor(sitID, out nextID, out int fleeID);
 
-            _main.SceneChanger(3, new LoadFightScene([player, new Character("grgv edfws", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [.. enemies], nextID));
+            _main.SceneChanger(3, new LoadFightScene([player, new Character("grgv edfws", "fesfg", "fwf3w", 3, 100, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 100, [], [], [])], [.. enemies], nextID, fleeID));
             return null;
         }
 

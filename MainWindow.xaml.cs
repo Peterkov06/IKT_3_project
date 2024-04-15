@@ -40,28 +40,6 @@ namespace IKT_3_project
             InitializeComponent();
             ChangeSceneEvent += SceneChanger;
             ChangeSceneEvent.Invoke(0, null);
-            /*EventMethods.Add(1, GiveToPlayer);
-
-            ParameterMethods.Add(1, GetFromPlayer);
-            ParameterMethods.Add(2, GetFromDB);
-
-            string path = "..\\..\\..\\Launcher\\UIxml.xml";
-            XDocument doc = XDocument.Load(path);
-            /*
-            var parentTag = doc.Root.Descendants("MainMenu").FirstOrDefault();
-
-            foreach (XElement element in parentTag.Descendants("Button"))
-            {
-                Button button = new Button { Name = (string)element.Attribute("Name"),
-                    Content = (string)element.Attribute("Content"),
-                    Margin = new Thickness(5),
-                };
-                string methodName = (string)element.Attribute("OnClick");
-                MethodInfo method = GetType().GetMethod(methodName);
-                button.Click += (sender, e) => { method.Invoke(this, new object[] { sender, e }); };
-                panel.Children.Add(button);
-            }
-            MainGrid.Children.Add(panel);*/
             
         }
 
@@ -136,7 +114,7 @@ namespace IKT_3_project
                         }
 
                         LoadFightScene loadFightScene = arguments as LoadFightScene;
-                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide, additionalSystems, loadFightScene.nextEventID);
+                        OurWindow.Content = new FightSystem(this, loadFightScene.playerSide, loadFightScene.enemySide, additionalSystems, loadFightScene.nextEventID, loadFightScene.fleeID);
 
                     }
                     break;

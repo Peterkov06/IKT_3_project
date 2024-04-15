@@ -96,11 +96,12 @@ namespace IKT_3_project
         public string dbPath = dbPath;
     }
 
-    public class LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID)
+    public class LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID, int fleeID)
     {
         public ICharacter?[] playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
         public ICharacter?[] enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
         public int nextEventID = nextEventID;
+        public int fleeID = fleeID;
     }
 
     public class LoadCharacterCreatorObj(string[] classes, string[] races, string[] stats)
@@ -118,14 +119,6 @@ namespace IKT_3_project
         public int eventID;
         public int[] UnusableIDs { get; set; }
         public string? XMLpath { get; set; }
-
-        public SaveData(Character player, ICharacter?[] teammates, int eventID)
-        {
-            this.player = player ?? throw new ArgumentNullException(nameof(player));
-            this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));
-            this.eventID = eventID;
-            XMLpath = null;
-        }
         [JsonConstructor]
         public SaveData(Character player, ICharacter?[] teammates, int eventID, string xml, int[] unusableIDs)
         {
