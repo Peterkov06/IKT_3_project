@@ -35,7 +35,13 @@ namespace IKT_3_project
             return null;
         }
 
-        public object? GetFromDB(string key, int method) // Get data out from the DB
+        /// <summary>
+        /// Gets the id of an item, and returns it from the Items table.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="method"></param>
+        /// <returns>Object: Name, Attributes (Dictionary<string, int>)</returns>
+        public object? GetItemFromDB(string key, int method) // Get data out from the DB
         {
             string connString = $"Data Source={_main.dbPath};Version=3;";
             using (SQLiteConnection conn = new SQLiteConnection(connString))
@@ -56,7 +62,7 @@ namespace IKT_3_project
                                     {
                                         JObject attributesJO = JObject.Parse(reader.GetString(2)); // Item attributes read
                                         Dictionary<string, int> attributes = attributesJO.ToObject<Dictionary<string, int>>(); //Turn attributes into a dictionary
-                                        return new { Name = $"{reader.GetString(1)}", Attributes = attributes }; // Return the objectified item with it's name and attributes
+                                        return new InventoryItem(Name = $"{reader.GetString(1)}", attributes = attributes) ; // Return the objectified item with it's name and attributes
 
                                     }
                                     catch (Exception)

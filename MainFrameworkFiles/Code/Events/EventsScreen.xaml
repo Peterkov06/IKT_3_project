@@ -36,8 +36,6 @@
                         <MenuItem Header="Menu" Height="34">
                             <MenuItem Header="Save" x:Name="SaveBtn">
                             </MenuItem>
-                            <MenuItem Header="Load" x:Name="LoadBtn">
-                            </MenuItem>
                             <MenuItem Header="Back to main menu" x:Name="MainMenuBtn">
                             </MenuItem>
                         </MenuItem>

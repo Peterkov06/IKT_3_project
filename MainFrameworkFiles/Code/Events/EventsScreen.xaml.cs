@@ -50,10 +50,9 @@ namespace IKT_3_project
             ParameterMethods.Add(1, GetHPFromPlayer);
             ParameterMethods.Add(2, GetStatFromPlayer);
             ParameterMethods.Add(3, GetItemFromPlayer);
-            ParameterMethods.Add(4, GetFromDB);
-            ParameterMethods.Add(5, GetPlayerLevel);
-            ParameterMethods.Add(6, GetPlayerClass);
-            ParameterMethods.Add(7, GetPlayerRace);
+            ParameterMethods.Add(4, GetPlayerLevel);
+            ParameterMethods.Add(5, GetPlayerClass);
+            ParameterMethods.Add(6, GetPlayerRace);
 
             LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
             LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([player, new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2)); };
@@ -83,10 +82,9 @@ namespace IKT_3_project
             ParameterMethods.Add(1, GetHPFromPlayer);
             ParameterMethods.Add(2, GetStatFromPlayer);
             ParameterMethods.Add(3, GetItemFromPlayer);
-            ParameterMethods.Add(4, GetFromDB);
-            ParameterMethods.Add(5, GetPlayerLevel);
-            ParameterMethods.Add(6, GetPlayerClass);
-            ParameterMethods.Add(7, GetPlayerRace);
+            ParameterMethods.Add(4, GetPlayerLevel);
+            ParameterMethods.Add(5, GetPlayerClass);
+            ParameterMethods.Add(6, GetPlayerRace);
 
             player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 }, { "SelectedWeapon", 1 } });
             player.Inventory.Add("BackPack", new Dictionary<string, int> { { "MinDamage", 10 } });
@@ -115,7 +113,7 @@ namespace IKT_3_project
             using (SQLiteConnection conn = new SQLiteConnection(connString))
             {
                 conn.Open();
-                string sqlComm = $"SELECT text FROM Parts Where id = {ind}";
+                string sqlComm = $"SELECT text, image_name FROM Parts Where id = {ind}";
                 using (SQLiteCommand cmd = new(sqlComm, conn))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -126,21 +124,22 @@ namespace IKT_3_project
                             TextBlock test = new() { Text = reader.GetString(0), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(5), FontSize = 16 };
                             textWrapper.Children.Add(test);
                             TextUndIMG.Children.Add(textWrapper);
+                            if (!reader.IsDBNull(1))
+                            {
+                                Image image = new Image();
+                                image.BeginInit();
+                                image.Source = _main.GetImageAtIndex(reader.GetString(1));
+                                image.EndInit();
+                                image.Margin = new Thickness(5);
+                                image.Stretch = Stretch.Uniform;
+                                Grid.SetColumn(image, 0);
+                                Grid.SetRow(image, 1);
+
+                                TextUndIMG.Children.Add(image);
+                            }
+                            MainGrid.Children.Add(TextUndIMG);
                         }
                     }
-
-                    Image image = new Image();
-                    image.BeginInit();
-                    image.Source = _main.GetImageAtIndex("_e834608c-1c29-4a8f-a97f-42550dcbe26d");
-                    image.EndInit();
-                    image.Margin = new Thickness(5);
-                    image.Stretch = Stretch.Uniform;
-                    Grid.SetColumn(image, 0);
-                    Grid.SetRow(image, 1);
-
-                    TextUndIMG.Children.Add(image);
-                    MainGrid.Children.Add(TextUndIMG);
-
                     string sqlComm2 = $"SELECT text, next_part, method, parameters, choice_condition, is_retakable, tooltip FROM Choiches Where part_id = {ind}";
                     StackPanel panel = new StackPanel();
                     Grid.SetColumn(panel, 1);
@@ -252,7 +251,7 @@ namespace IKT_3_project
                 }
                 PlayerStatBar.Children.Add(lbl);
             }
-            Button inventoryBtn = new() { Content = "Inventory" };
+            Button inventoryBtn = new() { Content = "Inventory", Margin = new Thickness(5) };
             inventoryBtn.Click += (sender, e) => { InventoryWindow invWndw = new(ref player); invWndw.ShowDialog(); };
             PlayerStatBar.Children.Add(inventoryBtn);
         }

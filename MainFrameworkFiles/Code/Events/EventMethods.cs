@@ -37,13 +37,13 @@ namespace IKT_3_project
         {
             //To be implemented: Inventory adding WORKS
             /*[{"LongBow": {"Damage": 4, "Endurance": 1}},{ "Sword": {"Damage":16}}]*/
-            JArray items = JArray.Parse(key);
+            /*[1,2]*/
+            JArray items = JArray.Parse(key); // ids of objs
 
-            foreach (JObject item in items)
+            foreach (int item in items)
             {
-                IEnumerable<string> itemName = item.Properties().Select(p => p.Name);
-                Dictionary<string, int> dat = item[itemName.First()].ToObject<Dictionary<string, int>>();
-                player.Inventory.TryAdd(itemName.First(), dat);
+                var data = GetItemFromDB(item.ToString(), 1) as InventoryItem;
+                player.Inventory.TryAdd(data.Name, data.Attributes );
             }
             return null;
         }

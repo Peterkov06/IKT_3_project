@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="InventoryWindow" Height="450" Width="800">
     <Grid>
-        <ListView x:Name="InventoryList" Margin="15">
+        <ListView x:Name="InventoryList" Margin="15" FontSize="16">
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="Item name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>

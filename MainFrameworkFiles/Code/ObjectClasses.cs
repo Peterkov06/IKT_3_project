@@ -137,4 +137,16 @@ namespace IKT_3_project
         }
     }
 
+    public class InventoryItem
+    {
+        public string Name { get; set; }
+        public Dictionary<string, int> Attributes { get; set; }
+
+        public InventoryItem(string name, Dictionary<string, int> attributes)
+        {
+            Name = name;
+            Attributes = attributes;
+        }
+    }
+
 }
