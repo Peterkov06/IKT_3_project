@@ -82,7 +82,13 @@ namespace IKT_3_project
                     OurWindow.Content = new MainMenu(this);
                     break;
                 case 1: // Loads Character customizer
-                    OurWindow.Content = new CharacterCustomizer(this, new LoadCharacterCreatorObj(["Fighter", "Wizard", "Monk"], ["Ork", "High-elf", "Goblin", "Human"], ["Strength", "Dexterity", "Intelligance"]));
+                    if (arguments != null && arguments is LoadNewStory)
+                    {
+                        LoadNewStory specifiedObj = arguments as LoadNewStory;
+                        xmlPath = specifiedObj.dbPath;
+                        SetFilePaths();
+                        OurWindow.Content = new CharacterCustomizer(this, new LoadCharacterCreatorObj(["Fighter", "Wizard", "Monk"], ["Ork", "High-elf", "Goblin", "Human"], ["Strength", "Dexterity", "Intelligance"]));
+                    }
                     break;
                 case 2: // Loads Events
                     if (arguments != null && arguments is LoadNewStory)
@@ -186,6 +192,58 @@ namespace IKT_3_project
             unavailableChoicheIDs.Clear();
             fileName = null;
             imgLibraryFile = null;
+        }
+
+        public void DataForCharacter()
+        {
+            string connString = $"Data Source={/*_main.*/dbPath};Version=3;";
+            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            {
+                List<string> classNames = new();
+                List<Dictionary<string, int>> classAttributes = new();
+                List<Dictionary<string, int>> raceAttributes = new();
+                List<string> raceNames = new();
+                conn.Open();
+                string sqlCommand = "";
+                string[] thingsToGet = ["Classes", "Races"];
+
+                for (int i = 0; i < thingsToGet.Length; i++)
+                {
+                    sqlCommand = $"SELECT * FROM {thingsToGet[i]}";
+                    using (SQLiteCommand cmd = new(sqlCommand, conn))
+                    {
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                try
+                                {
+                                    switch (i)
+                                    {
+                                        case 0:
+                                            JObject attributesJO = JObject.Parse(reader.GetString(2)); // Class attributes read
+                                            Dictionary<string, int> attributes = attributesJO.ToObject<Dictionary<string, int>>(); //Turn attributes into a dictionary
+                                            classNames.Add(reader.GetString(1));
+                                            classAttributes.Add(attributes);
+                                            break;
+                                        case 1:
+                                            JObject raceAttributesJO = JObject.Parse(reader.GetString(2)); // Race attributes read
+                                            Dictionary<string, int> raceAttributesc = raceAttributesJO.ToObject<Dictionary<string, int>>(); //Turn attributes into a dictionary
+                                            raceNames.Add(reader.GetString(1));
+                                            raceAttributes.Add(raceAttributesc);
+                                            break;
+
+                                    }
+                                    
+
+                                }
+                                catch (Exception)
+                                {}
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

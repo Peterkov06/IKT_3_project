@@ -31,10 +31,15 @@ namespace IKT_3_project
         int selectedEnemyID;
         List<Button> Playerbtns = new();
         List<ProgressBar> playerSideBars = new();
+        List<Label> playerSideLabels = new();
+        List<Label> enemySideLabels = new();
         List<ProgressBar> enemySideBars = new();
         List<Button> Enemybtns = new();
         List<int> Enabled=new();
         int turnNumber = -1;
+
+        Random r = new();
+
         public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID, int fleeID)
         {
             InitializeComponent();
@@ -81,6 +86,7 @@ namespace IKT_3_project
                 var btn = FindName($"Ally{i}") as Button;
                 btn.Visibility = Visibility.Visible;
                 playerSideBars.Add(progressBar);
+                playerSideLabels.Add(label);
                 int val = i;
                 btn.Click += (s, e) => 
                 {
@@ -106,6 +112,7 @@ namespace IKT_3_project
                 progressBar.Maximum = enemySide[selectedEnemyID].MaxHP;
                 progressBar.Value =enemySide[selectedEnemyID].CurrentHP;
                 enemySideBars.Add(progressBar);
+                enemySideLabels.Add(label);
                 var btn = FindName($"EnemyButton{i}") as Button;
                 btn.Visibility=Visibility.Visible;
                 int val = i;
@@ -128,25 +135,32 @@ namespace IKT_3_project
 
         public void DiceRoll()
         {
-            Random r = new();
             int checkDice = 8;
             int Rolled = r.Next(1, checkDice);
         }
 
         public void AllyDamage(int enemyID)
         {
-            int damage = 30;
-            enemySide[enemyID].TakeDamage(damage);
+            int damage = 40;
+            ICharacter enemy = enemySide[enemyID];
+            enemy.TakeDamage(damage);
             UpdateHealthBar(enemyID, turnNumber);
+            if(!enemy.Alive)
+            {
+                RemoveCharacterAtIndex(enemyID, turnNumber);
+            }
         }
 
         public void EnemyDamage(int playerID)
         {
-
-            int damage = 20;
-            playerSide[playerID].TakeDamage(damage);
+            int damage = 40;
+            ICharacter player = playerSide[playerID];
+            player.TakeDamage(damage);
             UpdateHealthBar(playerID, turnNumber);
-
+            if (!player.Alive)
+            {
+                RemoveCharacterAtIndex(playerID, turnNumber);
+            }
             EnemyTurn();
         }
         public void Heal(int playerID)// már van objclass-ba
@@ -171,7 +185,6 @@ namespace IKT_3_project
         }
         public void Turn()
         {
-          
             if(turnNumber==-1 || turnNumber==1)
             {
                 PopP();
@@ -188,28 +201,27 @@ namespace IKT_3_project
                 EnemyTurn();
             }
             
-            
-
-
-
         }
 
         public void EnemyTurn()
         {
-            Random r = new();
-
             if (turnNumber == 0)
             {
                 turnNumber = 1;
                 for (int i = 0; i < enemySide.Count; i++)
                 {
-                    selectedAllayID = r.Next(0, playerSide.Count);
-                    EnemyDamage(selectedAllayID);
-                    MessageBox.Show($"{selectedAllayID} ; {playerSide[selectedAllayID].CurrentHP}");
-                    
+                    if (playerSide.Count > 0)
+                    {
+                        selectedAllayID = r.Next(0, playerSide.Count);
+                        EnemyDamage(selectedAllayID);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
                 }
-                Turn();
-                
+                Turn(); 
             }
             
         }        
@@ -243,16 +255,13 @@ namespace IKT_3_project
                 if (Enabled.Contains(i) && turnNumber == 0 || turnNumber == 1)
                 {
                     Playerbtns[i].IsEnabled = changedTo;
-                }
-                
-
+                }  
             }
 
         }
 
         private void Ally_Click(object sender, RoutedEventArgs e)
         {
-            
             ToggleActionBtns(true);
             PlayerSelected(false);
         }
@@ -293,6 +302,41 @@ namespace IKT_3_project
                 case 1:
                     playerSideBars[index].Value = playerSide[index].CurrentHP;
                     break;
+            }
+        }
+
+        private void RemoveCharacterAtIndex(int index, int sideAttacking)
+        {
+            switch (sideAttacking)
+            {
+                case 0:
+                    enemySide.RemoveAt(index);
+                    enemySideBars[index].Visibility = Visibility.Collapsed;
+                    Enemybtns[index].Visibility = Visibility.Collapsed;
+                    enemySideLabels[index].Visibility = Visibility.Collapsed;
+                    CheckEnemyNum();
+                    break;
+                case 1:
+                    if (index == 0)
+                    {
+                        MessageBox.Show("You died!");
+                        turnNumber = -2;
+                        _main.SceneChanger(0, null);
+                    }
+                    playerSide.RemoveAt(index);
+                    playerSideBars[index].Visibility = Visibility.Collapsed;
+                    Playerbtns[index].Visibility = Visibility.Collapsed;
+                    playerSideLabels[index].Visibility = Visibility.Collapsed;
+                    break;
+            }
+        }
+
+        private void CheckEnemyNum()
+        {
+            if (enemySide.Count < 1)
+            {
+                MessageBox.Show("You won!");
+                ReturnToStory(nexteventID);
             }
         }
     }

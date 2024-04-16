@@ -178,7 +178,7 @@ namespace IKT_3_project
                     {
                         _main.fileName = fileNameBox.Text;
                     }
-                    _main.SceneChanger(2, new LoadNewStory(selectedPath));
+                    _main.SceneChanger(1, new LoadNewStory(selectedPath));
                 };
                 Button backBtn = new Button() { Content = "Back", Margin = new Thickness(15) };
                 backBtn.Click += (s,e) => { MainGrid.Children.Remove(enterFileName); };

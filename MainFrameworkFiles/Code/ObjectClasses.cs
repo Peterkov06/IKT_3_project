@@ -20,6 +20,7 @@ namespace IKT_3_project
         public int Level { get; set; }
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
+        public bool Alive { get; set; }
 
         public Dictionary<string, int> Stats { get; set; }
         public Dictionary<string, int> Buffs { get; set; }
@@ -37,6 +38,7 @@ namespace IKT_3_project
             Stats = stats ?? throw new ArgumentNullException(nameof(stats));
             Buffs = buffs ?? throw new ArgumentNullException(nameof(buffs));
             Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
+            Alive = true;
         }
 
         /// <summary>
@@ -54,8 +56,7 @@ namespace IKT_3_project
 
         void Death()
         {
-            MessageBox.Show("You died!");
-           
+            Alive = false;
         }
 
         /// <summary>

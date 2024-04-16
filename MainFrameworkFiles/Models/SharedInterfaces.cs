@@ -17,6 +17,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
             public int MaxHP { get; set; }
             public int CurrentHP { get; set; }
             public string b64IconString { get; set; }
+            public bool Alive { get; set; }
 
             public Dictionary<string, int> Stats { get; set; }
             public Dictionary<string, int> Buffs { get; set; }

@@ -35,11 +35,6 @@ namespace IKT_3_project
             stats = choosableOptions.stats;
         }
 
-        public CharacterCreator()
-        {
-            InitializeComponent();
-        }
-
         private void GenerateStats_Click(object sender, RoutedEventArgs e)
         {
             GenerateCharacterStats();
