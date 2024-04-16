@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="IKT_3_project.CharacterCustomizer"
+<UserControl x:Class="IKT_3_project.CharacterCustomizer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,57 @@
              xmlns:local="clr-namespace:IKT_3_project"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<StackPanel Grid.Column="0" Margin="20">
+			<StackPanel Margin="0,0,0,10">
+				<Label Content="Gender:" HorizontalAlignment="Center"/>
+				<ComboBox Name="genderComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+					<ComboBoxItem Content="Male"/>
+					<ComboBoxItem Content="Female"/>
+				</ComboBox>
+			</StackPanel>
+
+			<StackPanel Margin="0,0,0,10">
+				<Label Content="Race:" HorizontalAlignment="Center"/>
+				<ComboBox Name="raceComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+					<ComboBoxItem Content="Human"/>
+					<ComboBoxItem Content="Elf"/>
+					<ComboBoxItem Content="Tiefling"/>
+					<ComboBoxItem Content="Dwarf"/>
+					<ComboBoxItem Content="Half-Orc"/>
+				</ComboBox>
+			</StackPanel>
+
+			<StackPanel Margin="0,0,0,10">
+				<Label Content="Class:" HorizontalAlignment="Center"/>
+				<ComboBox Name="classComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+					<ComboBoxItem Content="Paladin"/>
+					<ComboBoxItem Content="Wizard"/>
+					<ComboBoxItem Content="Barbarian"/>
+					<ComboBoxItem Content="Rogue"/>
+				</ComboBox>
+			</StackPanel>
+
+			<Button Content="Generate Stats" Click="GenerateStats_Click" HorizontalAlignment="Center"/>
+
+			<Button Content="Roll Again" Click="RollAgain_Click" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+		</StackPanel>
+		<StackPanel Margin="20,369,20,0" Grid.ColumnSpan="2">
+			<Border BorderBrush="Black" BorderThickness="1" Margin="0 0 0 10">
+				<Label Name="initialStatsLabel" Content="Initial Stats: Strength: 8, Dexterity: 8, Constitution: 8, Intelligence: 8, Wisdom: 8, Charisma: 8" Margin="5"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+			</Border>
+
+			<Border BorderBrush="Black" BorderThickness="1" Margin="0 0 0 10">
+				<Label Name="statsLabel" Content="Character Stats:" Visibility="Collapsed" Margin="5"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+			</Border>
+
+			<Button Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+		</StackPanel>
+	</Grid>
 </UserControl>
