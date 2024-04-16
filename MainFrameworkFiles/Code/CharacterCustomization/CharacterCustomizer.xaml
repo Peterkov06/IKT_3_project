@@ -11,8 +11,15 @@
 	        <ColumnDefinition Width="*" />
 	        <ColumnDefinition Width="*" />
 	    </Grid.ColumnDefinitions>
-	    <StackPanel Grid.Column="0" Margin="20">
-	        <StackPanel Margin="0,0,0,10">
+	    <Grid Grid.Column="0" Margin="20">
+	        <Grid.RowDefinitions>
+	            <RowDefinition Height="Auto" />
+	            <RowDefinition Height="Auto" />
+	            <RowDefinition Height="Auto" />
+	            <RowDefinition Height="Auto" />
+	        </Grid.RowDefinitions>
+	
+	        <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Gender:" HorizontalAlignment="Center"/>
 	            <ComboBox Name="genderComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 	                <ComboBoxItem Content="Male"/>
@@ -20,7 +27,7 @@
 	            </ComboBox>
 	        </StackPanel>
 	
-	        <StackPanel Margin="0,0,0,10">
+	        <StackPanel Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Race:" HorizontalAlignment="Center"/>
 	            <ComboBox Name="raceComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 	                <ComboBoxItem Content="Human"/>
@@ -31,7 +38,7 @@
 	            </ComboBox>
 	        </StackPanel>
 	
-	        <StackPanel Margin="0,0,0,10">
+	        <StackPanel Grid.Row="2" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Class:" HorizontalAlignment="Center"/>
 	            <ComboBox Name="classComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 	                <ComboBoxItem Content="Paladin"/>
@@ -41,20 +48,26 @@
 	            </ComboBox>
 	        </StackPanel>
 	
-	        <Button Content="Generate Stats" Click="GenerateStats_Click" HorizontalAlignment="Center"/>
-	    </StackPanel>
-	    <StackPanel Margin="20,335,20,10" Grid.ColumnSpan="2">
-	        <Border BorderBrush="Black" BorderThickness="1" Margin="0 0 0 10">
-	            <Label Name="initialStatsLabel" Content="Initial Stats: Strength: 8, Dexterity: 8, Constitution: 8, Intelligence: 8, Wisdom: 8, Charisma: 8" Margin="5"
+	        <Button Grid.Row="3" Content="Generate Stats" Click="GenerateStats_Click" HorizontalAlignment="Center"/>
+	    </Grid>
+	    <Grid Grid.Column="1" Margin="20">
+	        <Grid.RowDefinitions>
+	            <RowDefinition Height="Auto" />
+	            <RowDefinition Height="Auto" />
+	            <RowDefinition Height="Auto" />
+	        </Grid.RowDefinitions>
+	
+	        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Margin="0 0 0 10">
+	            <Label x:Name="initialStatsLabel" Margin="5" Content="Statistics"
 	                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 	        </Border>
 	
-	        <Border BorderBrush="Black" BorderThickness="1" Margin="0 0 0 10">
+	        <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" Margin="0 0 0 10">
 	            <Label Name="statsLabel" Content="Character Stats:" Visibility="Collapsed" Margin="5"
 	                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 	        </Border>
 	
-	        <Button Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,0,0,0"/>
-	    </StackPanel>
+	        <Button Grid.Row="2" Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,0,0,0"/>
+	    </Grid>
 	</Grid>
 </UserControl>
