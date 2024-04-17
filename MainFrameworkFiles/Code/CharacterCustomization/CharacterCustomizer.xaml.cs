@@ -56,11 +56,11 @@ namespace IKT_3_project
             statsLabel.Visibility = Visibility.Visible;
 
             Random random = new Random();
-            string statsOutput = "Character Stats: ";
+            string statsOutput = "Character Stats:\n\n";
             foreach (string stat in new string[] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" })
             {
                 int statValue = random.Next(8, 17);
-                statsOutput += $"{stat}: {statValue}, ";
+                statsOutput += $"{stat}: {statValue}"\n;
             }
 
             statsLabel.Content = statsOutput;
