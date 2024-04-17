@@ -54,9 +54,6 @@ namespace IKT_3_project
             ParameterMethods.Add(5, GetPlayerClass);
             ParameterMethods.Add(6, GetPlayerRace);
 
-            LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
-            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([player, new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 500, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 500, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2, 1)); };
-
             SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
             MainMenuBtn.Click += (s, e) => {
                 _main.ClearData();
@@ -73,12 +70,14 @@ namespace IKT_3_project
             player = new("Player", "Fighter", "fwf3w", 20, 100, new() { { "Dexterity", 10 }, { "Intelligance", 100 } }, [], []);
             teamMates = [];
 
-            EventMethods.Add(1, StartFight);
+            //DB: method
+            EventMethods.Add(1, StartFight); // param: combat ID
             EventMethods.Add(2, GiveHPToPlayer);
             EventMethods.Add(3, GiveStatToPlayer);
             EventMethods.Add(4, GiveItemToPlayer);
             EventMethods.Add(5, GiveBuffToPlayer);
 
+            //DB: parameter_method
             ParameterMethods.Add(1, GetHPFromPlayer);
             ParameterMethods.Add(2, GetStatFromPlayer);
             ParameterMethods.Add(3, GetItemFromPlayer);
@@ -90,9 +89,6 @@ namespace IKT_3_project
             player.Inventory.Add("BackPack", new Dictionary<string, int> { { "MinDamage", 10 } });
             player.Inventory.Add("Sword22", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
             player.Stats.Add("Strength", 20);
-
-            LoadCharaterCreator.Click += (s, e) => { _main.SceneChanger(1, null); };
-            LoadFight.Click += (s, e) => { _main.SceneChanger(3, new LoadFightScene([ player ,new Character("grg", "fesfg", "fwf3w", 3, 100, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 100, [], [], [])], [new Character("enemy1", "fesfg", "fwf3w", 3, 100, [], [], []), new Character("enemy2", "fesfg", "fwf3w", 3, 500, [], [], [])], 2, 1));};
 
             SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
             MainMenuBtn.Click += (s, e) => {

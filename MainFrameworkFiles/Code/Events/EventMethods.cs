@@ -29,7 +29,6 @@ namespace IKT_3_project
             {
                 player.Stats.TryAdd(keyStrg, (int)stat[keyStrg]);
             }
-            MessageBox.Show($"{player.Stats.Count}");
             return null;
         }
 

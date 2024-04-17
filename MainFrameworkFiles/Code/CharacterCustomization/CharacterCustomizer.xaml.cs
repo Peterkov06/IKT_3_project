@@ -60,7 +60,7 @@ namespace IKT_3_project
             foreach (string stat in new string[] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" })
             {
                 int statValue = random.Next(8, 17);
-                statsOutput += $"{stat}: {statValue}"\n;
+                statsOutput += $"{stat}: {statValue}\n";
             }
 
             statsLabel.Content = statsOutput;

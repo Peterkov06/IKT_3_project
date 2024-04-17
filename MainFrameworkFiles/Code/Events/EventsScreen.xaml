@@ -7,15 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="8*"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
@@ -29,7 +20,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <WrapPanel x:Name="PlayerStatBar">
-                    
+
                 </WrapPanel>
                 <DockPanel Grid.Column="1" Grid.Row="0">
                     <Menu DockPanel.Dock="Top" HorizontalAlignment="Right">
@@ -59,9 +50,5 @@
                 </Grid>
             </Grid>
         </Grid>
-        <!--FOR TESTING THE SCENES-->
-        <Button Grid.Column="0" Grid.Row="1" Content="Load Character screen" Margin="8" x:Name="LoadCharaterCreator"></Button>
-        <Button Grid.Column="1" Grid.Row="1" Content="Load Fight screen" Margin="8" x:Name="LoadFight"></Button>
-    </Grid>
-    
+
 </UserControl>
