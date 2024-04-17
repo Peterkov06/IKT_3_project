@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GamePlugin>
+  <UI>
+	<EventScreen>
+		<StatBar Elements="Name;HP;Intelligence;Dexterity"></StatBar>
+	</EventScreen>
+  </UI>
+  <PathLinks>
+    <StoryDatabase Path="Game.db"></StoryDatabase>
+  </PathLinks>
+</GamePlugin>

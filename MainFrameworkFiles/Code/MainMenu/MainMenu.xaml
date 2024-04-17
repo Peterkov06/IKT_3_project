@@ -14,15 +14,15 @@
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="20">HELOO</TextBlock>
-        <StackPanel Grid.Column="0">
+        <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" FontSize="25">Theatre of adventures</TextBlock>
+        <StackPanel Grid.Column="0" Margin="0,14,0,0">
             <ListBox Margin="25" x:Name="Available_Stories" SelectionMode="Single" MinHeight="80">
             </ListBox>
             <Button Margin="25" Content="Import Story Folder" Click="ImportDefFile"></Button>
             <Button Margin="25" Content="Import IMG test" Click="ImportIMG"></Button>
             <Button Margin="25" Content="Play!" Click="LoadCharacterCreator" x:Name="NewGameBtn" IsEnabled="False"></Button>
         </StackPanel>
-        <StackPanel Grid.Column="1" x:Name="selucaSecondus">
+        <StackPanel Grid.Column="1" x:Name="selucaSecondus"  Margin="0,14,0,0">
             <ListBox Margin="25" x:Name="Available_saves"  SelectionMode="Single" MinHeight="80">
 
             </ListBox>

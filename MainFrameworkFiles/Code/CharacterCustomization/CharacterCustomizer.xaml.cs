@@ -1,6 +1,8 @@
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +28,7 @@ namespace IKT_3_project
         public string[] classes; // The choosable classes array
         public string[] races; // The choosable races array
         public string[] stats; // The array of stats that has to be assigned a value to (like Dexterity: 5)
+        Dictionary<string, int> statsDict = new();
         public CharacterCustomizer(MainWindow main, LoadCharacterCreatorObj choosableOptions)
         {
             _main = main;
@@ -33,6 +36,8 @@ namespace IKT_3_project
             classes = choosableOptions.classes;
             races = choosableOptions.races;
             stats = choosableOptions.stats;
+            GenerateDropdowns();
+            confirmBtn.Visibility = Visibility.Collapsed;
         }
 
         private void GenerateStats_Click(object sender, RoutedEventArgs e)
@@ -45,15 +50,32 @@ namespace IKT_3_project
             GenerateCharacterStats();
         }
 
+        void GenerateDropdowns()
+        {
+            classComboBox.Items.Clear();
+            raceComboBox.Items.Clear();
+            foreach (var c in classes)
+            {
+                classComboBox.Items.Add(c);
+            }
+
+            foreach (var race in races)
+            {
+                raceComboBox.Items.Add(race);
+            }
+        }
+
         private void ConfirmChoices_Click(object sender, RoutedEventArgs e)
         {
-
+            Character player = new(nameTextBox.Text, classComboBox.Text, raceComboBox.Text, 1, 100, statsDict, new(), new());
+            _main.SceneChanger(2, new BeginNewStory(player));
         }
 
         private void GenerateCharacterStats()
         {
             initialStatsLabel.Visibility = Visibility.Collapsed;
             statsLabel.Visibility = Visibility.Visible;
+            statsDict.Clear();
 
             Random random = new Random();
             string statsOutput = "Character Stats:\n\n";
@@ -61,9 +83,13 @@ namespace IKT_3_project
             {
                 int statValue = random.Next(8, 17);
                 statsOutput += $"{stat}: {statValue}\n";
+                statsDict.Add(stat, statValue);
             }
 
             statsLabel.Content = statsOutput;
+            confirmBtn.Visibility = Visibility.Visible;
         }
+
+        
     }
 }

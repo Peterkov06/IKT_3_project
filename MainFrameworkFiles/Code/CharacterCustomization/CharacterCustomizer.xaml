@@ -32,7 +32,7 @@
 	
 	        <StackPanel Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Race:" HorizontalAlignment="Center"/>
-	            <ComboBox Name="raceComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+	            <ComboBox x:Name="raceComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 	                <ComboBoxItem Content="Human"/>
 	                <ComboBoxItem Content="Elf"/>
 	                <ComboBoxItem Content="Tiefling"/>
@@ -43,7 +43,7 @@
 	
 	        <StackPanel Grid.Row="2" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Class:" HorizontalAlignment="Center"/>
-	            <ComboBox Name="classComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+	            <ComboBox x:Name="classComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
 	                <ComboBoxItem Content="Paladin"/>
 	                <ComboBoxItem Content="Wizard"/>
 	                <ComboBoxItem Content="Barbarian"/>
@@ -70,7 +70,7 @@
 	                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 	        </Border>
 	
-	        <Button Grid.Row="2" Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,0,0,0"/>
+	        <Button x:Name="confirmBtn" Grid.Row="2" Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,0,0,0"/>
 	    </Grid>
 	</Grid>
 </UserControl>

@@ -25,6 +25,8 @@ namespace IKT_3_project.MainFrameworkFiles.Models
 
             public void TakeDamage(int damage);
             public void Heal(int heal);
+            void Death();
+            public object? GetWeapon();
         }
 
         public interface IAdditionalSystem

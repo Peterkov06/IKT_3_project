@@ -38,6 +38,7 @@ namespace IKT_3_project
             Stats = stats ?? throw new ArgumentNullException(nameof(stats));
             Buffs = buffs ?? throw new ArgumentNullException(nameof(buffs));
             Inventory = inventory ?? throw new ArgumentNullException(nameof(inventory));
+            b64IconString = "";
             Alive = true;
         }
 
@@ -54,7 +55,7 @@ namespace IKT_3_project
             }
         }
 
-        void Death()
+        public void Death()
         {
             Alive = false;
         }
@@ -67,11 +68,13 @@ namespace IKT_3_project
         {
             var weapon = Inventory.Where(item => item.Value.ContainsKey("SelectedWeapon")).ToDictionary();
             //MessageBox.Show($"{weapon.Keys.First()}");
-            if (weapon != null)
+            if (weapon.Count > 0)
             {
                 return weapon;
             }
-            return null;
+            var weaps = Inventory.Where(item => item.Value.ContainsKey("Weapon")).ToDictionary();
+            weaps.First().Value.Add("SelectedWeapon", 1);
+            return Inventory.Where(item => item.Value.ContainsKey("SelectedWeapon")).ToDictionary();
         }
 
         /// <summary>
@@ -95,6 +98,11 @@ namespace IKT_3_project
     public class LoadNewStory(string dbPath)
     {
         public string dbPath = dbPath;
+    }
+
+    public class BeginNewStory(Character player)
+    {
+        public Character player = player;
     }
 
     public class LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID, int fleeID)

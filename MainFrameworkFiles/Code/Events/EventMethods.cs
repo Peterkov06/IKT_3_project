@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml.Linq;
+using System.Reflection.PortableExecutable;
 
 namespace IKT_3_project
 {
@@ -40,7 +41,8 @@ namespace IKT_3_project
 
             foreach (int item in items)
             {
-                var data = GetItemFromDB(item.ToString(), 1) as InventoryItem;
+                InventoryItem data = (InventoryItem)GetItemFromDB(item.ToString(), 1);
+
                 player.Inventory.TryAdd(data.Name, data.Attributes );
             }
             return null;
@@ -66,7 +68,7 @@ namespace IKT_3_project
 
             var enemies = EnemyConstructor(sitID, out nextID, out int fleeID);
 
-            _main.SceneChanger(3, new LoadFightScene([player/*, new Character("grgv edfws", "fesfg", "fwf3w", 3, 100, [], [], []), new Character("grg", "fesfg", "fwf3w", 3, 100, [], [], [])*/], [.. enemies], nextID, fleeID));
+            _main.SceneChanger(3, new LoadFightScene([player, ..teamMates], [.. enemies], nextID, fleeID));
             return null;
         }
 

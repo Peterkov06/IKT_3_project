@@ -45,7 +45,10 @@ namespace IKT_3_project
             }
 
             var selectedBefore = Player.GetWeapon() as Dictionary<string, Dictionary<string, int>>;
-            Player.Inventory[selectedBefore.Keys.First()].Remove("SelectedWeapon");
+            if (selectedBefore.Count > 0)
+            {
+                Player.Inventory[selectedBefore.Keys.First()].Remove("SelectedWeapon");
+            }
 
             Item itemName = thisCheck.DataContext as Item;
             Player.Inventory[itemName.Name].Add("SelectedWeapon", 1);

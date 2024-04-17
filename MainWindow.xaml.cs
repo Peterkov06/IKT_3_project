@@ -87,16 +87,15 @@ namespace IKT_3_project
                         LoadNewStory specifiedObj = arguments as LoadNewStory;
                         xmlPath = specifiedObj.dbPath;
                         SetFilePaths();
-                        OurWindow.Content = new CharacterCustomizer(this, new LoadCharacterCreatorObj(["Fighter", "Wizard", "Monk"], ["Ork", "High-elf", "Goblin", "Human"], ["Strength", "Dexterity", "Intelligance"]));
+                        DataForCharacter(out string[] classes, out string[] races);
+                        OurWindow.Content = new CharacterCustomizer(this, new LoadCharacterCreatorObj(classes, races, ["Strength", "Dexterity", "Intelligance"]));
                     }
                     break;
                 case 2: // Loads Events
-                    if (arguments != null && arguments is LoadNewStory)
+                    if (arguments != null && arguments is BeginNewStory)
                     {
-                        LoadNewStory specifiedObj = arguments as LoadNewStory;
-                        xmlPath = specifiedObj.dbPath;
-                        SetFilePaths();
-                        OurWindow.Content = new EventsScreen(this);
+                        BeginNewStory specifiedObj = arguments as BeginNewStory;
+                        OurWindow.Content = new EventsScreen(this, specifiedObj);
                     }
                     else if (arguments != null && arguments is SaveData)
                     {
@@ -137,9 +136,12 @@ namespace IKT_3_project
             storyFolder = System.IO.Path.GetDirectoryName(xmlPath);
 
             dbPath = System.IO.Path.Combine(storyFolder, _dbPath);
-            imgLibraryFile = System.IO.Path.Combine(storyFolder, _imgLib);
+            if (_imgLib != null)
+            {
+                imgLibraryFile = System.IO.Path.Combine(storyFolder, _imgLib);
+                LoadImgDLL(imgLibraryFile);
+            }
             statsToShow = doc.Root.Descendants("UI").Descendants("EventScreen").Descendants("StatBar").Attributes("Elements").Select(x => x.Value).FirstOrDefault().Split(';').ToArray();
-            LoadImgDLL(imgLibraryFile);
         }
 
         /// <summary>
@@ -194,9 +196,11 @@ namespace IKT_3_project
             imgLibraryFile = null;
         }
 
-        public void DataForCharacter()
+        public void DataForCharacter(out string[] classes, out string[] races)
         {
-            string connString = $"Data Source={/*_main.*/dbPath};Version=3;";
+            classes = new string[0];
+            races = new string[0];
+            string connString = $"Data Source={dbPath};Version=3;";
             using (SQLiteConnection conn = new SQLiteConnection(connString))
             {
                 List<string> classNames = new();
@@ -242,6 +246,10 @@ namespace IKT_3_project
                             }
                         }
                     }
+                    classes = new string[classNames.Count];
+                    races = new string[raceNames.Count];
+                    classes = classNames.ToArray();
+                    races = raceNames.ToArray();
                 }
             }
         }

@@ -31,14 +31,14 @@ namespace IKT_3_project
         public Dictionary<int, Func<string, int, object?>> ParameterMethods = [];
         public Dictionary<int, Func<string, int, object?>> EventMethods = [];
         Character player;
-        ICharacter?[] teamMates;
+        List<ICharacter?> teamMates;
         int currentEventID = 0;
         public EventsScreen(MainWindow main, SaveData state)
         {
             _main = main;
             InitializeComponent();
             player = state.player;
-            teamMates = state.teammates;
+            teamMates = state.teammates.ToList();
             currentEventID = state.eventID;
 
             EventMethods.Add(1, StartFight);
@@ -54,7 +54,7 @@ namespace IKT_3_project
             ParameterMethods.Add(5, GetPlayerClass);
             ParameterMethods.Add(6, GetPlayerRace);
 
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates.ToArray(), currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
             MainMenuBtn.Click += (s, e) => {
                 _main.ClearData();
                 _main.SceneChanger(0, null);
@@ -63,11 +63,11 @@ namespace IKT_3_project
             GeneratePart(state.eventID);
 
         }
-        public EventsScreen(MainWindow main)
+        public EventsScreen(MainWindow main, BeginNewStory newStory)
         {
             _main = main;
             InitializeComponent();
-            player = new("Player", "Fighter", "fwf3w", 20, 100, new() { { "Dexterity", 10 }, { "Intelligance", 100 } }, [], []);
+            player = newStory.player;
             teamMates = [];
 
             //DB: method
@@ -76,6 +76,7 @@ namespace IKT_3_project
             EventMethods.Add(3, GiveStatToPlayer);
             EventMethods.Add(4, GiveItemToPlayer);
             EventMethods.Add(5, GiveBuffToPlayer);
+            EventMethods.Add(6, AllyConstructor);
 
             //DB: parameter_method
             ParameterMethods.Add(1, GetHPFromPlayer);
@@ -85,12 +86,7 @@ namespace IKT_3_project
             ParameterMethods.Add(5, GetPlayerClass);
             ParameterMethods.Add(6, GetPlayerRace);
 
-            player.Inventory.Add("Dagger", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 }, { "SelectedWeapon", 1 } });
-            player.Inventory.Add("BackPack", new Dictionary<string, int> { { "MinDamage", 10 } });
-            player.Inventory.Add("Sword22", new Dictionary<string, int> { { "MinDamage", 10 }, { "MaxDamage", 40 }, { "Weapon", 1 } });
-            player.Stats.Add("Strength", 20);
-
-            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates, currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
+            SaveBtn.Click += (s, e) => { GameSaver.SaveGame(player, teamMates.ToArray(), currentEventID, main.xmlPath, System.IO.Path.Combine(_main.saveFolder, main.fileName), [.. _main.unavailableChoicheIDs]); };
             MainMenuBtn.Click += (s, e) => {
                 _main.ClearData();
                 _main.SceneChanger(0, null);
@@ -210,8 +206,7 @@ namespace IKT_3_project
                                             }
                                             catch (Exception)
                                             {
-                                            }
-                                            //MessageBox.Show($"Player HP: {player.HP}");         
+                                            }       
                                         };
                                     }
 
@@ -237,12 +232,15 @@ namespace IKT_3_project
                 Label lbl;
                 switch (item)
                 {
+                    case "Name":
+                        lbl = new Label() { Content = $"{player.Name}", FontSize = 18 };
+                        break;
                     case "HP":
-                        lbl = new Label() { Content=$"HP: {player.CurrentHP}", FontSize=18};
+                        lbl = new Label() { Content=$"HP: {player.CurrentHP}", FontSize=16};
                         break;
                     default:
                         player.Stats.TryGetValue(item, out int value);
-                        lbl = new() { Content = $"{item}:{value}", FontSize = 18 };
+                        lbl = new() { Content = $"{item}:{value}", FontSize = 16 };
                         break;
                 }
                 PlayerStatBar.Children.Add(lbl);

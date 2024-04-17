@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace IKT_3_project
@@ -62,7 +63,7 @@ namespace IKT_3_project
                                     {
                                         JObject attributesJO = JObject.Parse(reader.GetString(2)); // Item attributes read
                                         Dictionary<string, int> attributes = attributesJO.ToObject<Dictionary<string, int>>(); //Turn attributes into a dictionary
-                                        return new InventoryItem(Name = $"{reader.GetString(1)}", attributes = attributes) ; // Return the objectified item with it's name and attributes
+                                        return new InventoryItem(Name = $"{reader.GetString(1)}", attributes) ; // Return the objectified item with it's name and attributes
 
                                     }
                                     catch (Exception)
@@ -147,6 +148,35 @@ namespace IKT_3_project
                 }
             }
             return enemies.ToArray();
+        }
+
+        public object? AllyConstructor(string key, int method) // Creates enemy squad based on the db combat situation
+        {
+            int id = int.Parse(key);
+            string connString = $"Data Source={_main.dbPath};Version=3;";
+
+            using (SQLiteConnection conn = new SQLiteConnection(connString))
+            {
+                conn.Open();
+                string sqlComm = $"SELECT * FROM Allies Where id = {id}";
+                using (SQLiteCommand cmd = new(sqlComm, conn))
+                {
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var allEnemyAttributes = reader.GetValues();
+                            var statsObj = JObject.Parse(allEnemyAttributes[7]);
+                            var inventoryObj = JObject.Parse(allEnemyAttributes[8]);
+                            var stats = statsObj.ToObject<Dictionary<string, int>>();
+                            var inventory = inventoryObj.ToObject<Dictionary<string, Dictionary<string, int>>>();
+
+                            teamMates.Add(new Character(allEnemyAttributes[1], allEnemyAttributes[2], allEnemyAttributes[3], Convert.ToInt32(allEnemyAttributes[4]), Convert.ToInt32(allEnemyAttributes[5]), stats, [], inventory));
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }
