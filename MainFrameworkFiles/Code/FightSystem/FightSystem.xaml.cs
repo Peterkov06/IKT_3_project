@@ -2,6 +2,7 @@ using InterfaceClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -141,8 +142,14 @@ namespace IKT_3_project
 
         public void AllyDamage(int enemyID)
         {
-            int damage = 40;
+            int damage;
             ICharacter enemy = enemySide[enemyID];
+            ICharacter player = playerSide[selectedAllayID];
+            player.Stats.TryGetValue("Strength", out int strg);
+            Dictionary<string,Dictionary<string, int>> weap = player.GetWeapon() as Dictionary<string, Dictionary<string, int>>;
+            weap.FirstOrDefault().Value.TryGetValue("Damage", out int weapDamage);
+            MessageBox.Show($"{strg} {weapDamage}");
+            damage = strg + weapDamage;
             enemy.TakeDamage(damage);
             UpdateHealthBar(enemyID, turnNumber);
             if(!enemy.Alive)
@@ -151,11 +158,20 @@ namespace IKT_3_project
             }
         }
 
-        public void EnemyDamage(int playerID)
+        public void EnemyDamage(int playerID, int enemyID)
         {
-            int damage = 40;
+            int damage;
             ICharacter player = playerSide[playerID];
-            player.TakeDamage(damage);
+            if (enemyID < enemySide.Count)
+            {
+                ICharacter enemy = enemySide[enemyID];
+                enemy.Stats.TryGetValue("Strength", out int strg);
+                Dictionary<string, Dictionary<string, int>> weap = enemy.GetWeapon() as Dictionary<string, Dictionary<string, int>>;
+                weap.FirstOrDefault().Value.TryGetValue("Damage", out int weapDamage);
+                MessageBox.Show($"{strg} {weapDamage}");
+                damage = strg + weapDamage;
+                player.TakeDamage(damage);
+            }
             UpdateHealthBar(playerID, turnNumber);
             if (!player.Alive)
             {
@@ -210,10 +226,10 @@ namespace IKT_3_project
                 turnNumber = 1;
                 for (int i = 0; i < enemySide.Count; i++)
                 {
-                    if (playerSide.Count > 0)
+                    if (playerSide.Count > 0 && i > enemySide.Count)
                     {
                         selectedAllayID = r.Next(0, playerSide.Count);
-                        EnemyDamage(selectedAllayID);
+                        EnemyDamage(selectedAllayID, i);
                     }
                     else
                     {

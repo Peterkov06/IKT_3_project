@@ -63,7 +63,8 @@ namespace IKT_3_project
                                     {
                                         JObject attributesJO = JObject.Parse(reader.GetString(2)); // Item attributes read
                                         Dictionary<string, int> attributes = attributesJO.ToObject<Dictionary<string, int>>(); //Turn attributes into a dictionary
-                                        return new InventoryItem(Name = $"{reader.GetString(1)}", attributes) ; // Return the objectified item with it's name and attributes
+                                        InventoryItem final = new InventoryItem($"{reader.GetString(1)}", attributes);
+                                        return final ; // Return the objectified item with it's name and attributes
 
                                     }
                                     catch (Exception)
