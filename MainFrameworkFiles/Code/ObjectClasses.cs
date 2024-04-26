@@ -12,7 +12,7 @@ namespace IKT_3_project
     /// <summary>
     /// The main Character class, which is implemented by all characters.
     /// </summary>
-    public class Character: ICharacter // Character object
+    public class Character // Character object
     {
         public string Name { get; set; }
         public string Class { get; set; }
@@ -105,10 +105,10 @@ namespace IKT_3_project
         public Character player = player;
     }
 
-    public class LoadFightScene(ICharacter?[] playerSide, ICharacter?[] enemySide, int nextEventID, int fleeID)
+    public class LoadFightScene(Character?[] playerSide, Character?[] enemySide, int nextEventID, int fleeID)
     {
-        public ICharacter?[] playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
-        public ICharacter?[] enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
+        public Character?[] playerSide = playerSide ?? throw new ArgumentNullException(nameof(playerSide));
+        public Character?[] enemySide = enemySide ?? throw new ArgumentNullException(nameof(enemySide));
         public int nextEventID = nextEventID;
         public int fleeID = fleeID;
     }
@@ -124,12 +124,12 @@ namespace IKT_3_project
     {
 
         public Character player;
-        public ICharacter?[] teammates;
+        public Character?[] teammates;
         public int eventID;
         public int[] UnusableIDs { get; set; }
         public string? XMLpath { get; set; }
         [JsonConstructor]
-        public SaveData(Character player, ICharacter?[] teammates, int eventID, string xml, int[] unusableIDs)
+        public SaveData(Character player, Character?[] teammates, int eventID, string xml, int[] unusableIDs)
         {
             this.player = player ?? throw new ArgumentNullException(nameof(player));
             this.teammates = teammates ?? throw new ArgumentNullException(nameof(teammates));

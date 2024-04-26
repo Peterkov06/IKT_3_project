@@ -13,7 +13,7 @@ namespace IKT_3_project
 {
     public static class GameSaver
     {
-        public static void SaveGame(Character player, ICharacter[] team, int currID, string xmlPath, string filePath, int[] unusableIDs)
+        public static void SaveGame(Character player, Character[] team, int currID, string xmlPath, string filePath, int[] unusableIDs)
         {
             string jsonData = JsonConvert.SerializeObject(new SaveData(player, team, currID, xmlPath, unusableIDs));
             MessageBox.Show($"{jsonData}");

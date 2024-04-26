@@ -24,8 +24,8 @@ namespace IKT_3_project
     public partial class FightSystem : UserControl
     {
         MainWindow _main; // main window
-        List<ICharacter?> playerSide; // A list that stores the player's team [0] -> Player
-        List<ICharacter?> enemySide; // A list that stores the enemy team [x] -> Enemy
+        List<Character?> playerSide; // A list that stores the player's team [0] -> Player
+        List<Character?> enemySide; // A list that stores the enemy team [x] -> Enemy
         public Dictionary<int, IAdditionalSystem> additionalSystems; // This stores the methods required to calculate the damage and other things
         int nexteventID, fleeID; // The database ID of the next event after winning
         int selectedAllayID;
@@ -41,7 +41,7 @@ namespace IKT_3_project
 
         Random r = new();
 
-        public FightSystem(MainWindow main, ICharacter?[] playerSide, ICharacter?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID, int fleeID)
+        public FightSystem(MainWindow main, Character?[] playerSide, Character?[] enemySide, Dictionary<int, IAdditionalSystem> addSys, int nexteventID, int fleeID)
         {
             InitializeComponent();
             _main = main;
@@ -62,7 +62,9 @@ namespace IKT_3_project
         }
         public void ReturnToStory(int id) // Returns to the story with the new data
         {
-            _main.SceneChanger(2, new SaveData(playerSide[0] as Character, [.. playerSide], id, _main.xmlPath, _main.unavailableChoicheIDs.ToArray()));
+            Character givePlayer = playerSide[0];
+            playerSide.RemoveAt(0);
+            _main.SceneChanger(2, new SaveData(givePlayer, [.. playerSide], id, _main.xmlPath, _main.unavailableChoicheIDs.ToArray()));
         }
 
         private void SelectAlly(object sender, RoutedEventArgs e)
@@ -85,6 +87,8 @@ namespace IKT_3_project
                 var progressBar = PlayerSidePanel.FindName($"Playerprog{i}") as ProgressBar;
                 progressBar.Visibility = Visibility.Visible;
                 var btn = FindName($"Ally{i}") as Button;
+                TextBlock newBlock = new TextBlock() { Text = $"{playerSide[i].Name}", TextWrapping = TextWrapping.Wrap };
+                btn.Content = newBlock;
                 btn.Visibility = Visibility.Visible;
                 playerSideBars.Add(progressBar);
                 playerSideLabels.Add(label);
@@ -115,6 +119,8 @@ namespace IKT_3_project
                 enemySideBars.Add(progressBar);
                 enemySideLabels.Add(label);
                 var btn = FindName($"EnemyButton{i}") as Button;
+                TextBlock newBlock = new TextBlock() { Text = $"{enemySide[i].Name}", TextWrapping = TextWrapping.Wrap };
+                btn.Content = newBlock;
                 btn.Visibility=Visibility.Visible;
                 int val = i;
                 btn.Click += (s, e) =>
@@ -143,12 +149,11 @@ namespace IKT_3_project
         public void AllyDamage(int enemyID)
         {
             int damage;
-            ICharacter enemy = enemySide[enemyID];
-            ICharacter player = playerSide[selectedAllayID];
+            Character enemy = enemySide[enemyID];
+            Character player = playerSide[selectedAllayID];
             player.Stats.TryGetValue("Strength", out int strg);
             Dictionary<string,Dictionary<string, int>> weap = player.GetWeapon() as Dictionary<string, Dictionary<string, int>>;
             weap.FirstOrDefault().Value.TryGetValue("Damage", out int weapDamage);
-            MessageBox.Show($"{strg} {weapDamage}");
             damage = strg + weapDamage;
             enemy.TakeDamage(damage);
             UpdateHealthBar(enemyID, turnNumber);
@@ -161,14 +166,13 @@ namespace IKT_3_project
         public void EnemyDamage(int playerID, int enemyID)
         {
             int damage;
-            ICharacter player = playerSide[playerID];
+            Character player = playerSide[playerID];
             if (enemyID < enemySide.Count)
             {
-                ICharacter enemy = enemySide[enemyID];
+                Character enemy = enemySide[enemyID];
                 enemy.Stats.TryGetValue("Strength", out int strg);
                 Dictionary<string, Dictionary<string, int>> weap = enemy.GetWeapon() as Dictionary<string, Dictionary<string, int>>;
                 weap.FirstOrDefault().Value.TryGetValue("Damage", out int weapDamage);
-                MessageBox.Show($"{strg} {weapDamage}");
                 damage = strg + weapDamage;
                 player.TakeDamage(damage);
             }
@@ -179,10 +183,13 @@ namespace IKT_3_project
             }
             EnemyTurn();
         }
-        public void Heal(int playerID)// már van objclass-ba
+        public void Heal(object senger, RoutedEventArgs dwa)// már van objclass-ba
         {
             int HealRestore = 20; // Random Heal number, going to depend on the potion
-            playerSide[playerID].CurrentHP += HealRestore;
+            playerSide[selectedAllayID].Heal(HealRestore);
+            UpdateHealthBar(selectedAllayID,1);
+            Turn();
+
         }
         public void PopP()
         {
@@ -226,14 +233,10 @@ namespace IKT_3_project
                 turnNumber = 1;
                 for (int i = 0; i < enemySide.Count; i++)
                 {
-                    if (playerSide.Count > 0 && i > enemySide.Count)
+                    if (playerSide.Count > 0 && enemySide[i].Alive)
                     {
                         selectedAllayID = r.Next(0, playerSide.Count);
                         EnemyDamage(selectedAllayID, i);
-                    }
-                    else
-                    {
-                        break;
                     }
 
                 }
@@ -326,7 +329,7 @@ namespace IKT_3_project
             switch (sideAttacking)
             {
                 case 0:
-                    enemySide.RemoveAt(index);
+                    //enemySide.RemoveAt(index);
                     enemySideBars[index].Visibility = Visibility.Collapsed;
                     Enemybtns[index].Visibility = Visibility.Collapsed;
                     enemySideLabels[index].Visibility = Visibility.Collapsed;
@@ -339,7 +342,7 @@ namespace IKT_3_project
                         turnNumber = -2;
                         _main.SceneChanger(0, null);
                     }
-                    playerSide.RemoveAt(index);
+                    //playerSide.RemoveAt(index);
                     playerSideBars[index].Visibility = Visibility.Collapsed;
                     Playerbtns[index].Visibility = Visibility.Collapsed;
                     playerSideLabels[index].Visibility = Visibility.Collapsed;
@@ -349,7 +352,15 @@ namespace IKT_3_project
 
         private void CheckEnemyNum()
         {
-            if (enemySide.Count < 1)
+            int alive = 0;
+            for (int i = 0; i < enemySide.Count; i++)
+            {
+                if (enemySide[i].Alive)
+                {
+                    alive++;
+                }
+            }
+            if (alive < 1)
             {
                 MessageBox.Show("You won!");
                 ReturnToStory(nexteventID);

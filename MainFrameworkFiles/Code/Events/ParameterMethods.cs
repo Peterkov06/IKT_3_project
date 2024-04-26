@@ -94,11 +94,11 @@ namespace IKT_3_project
             return player.Race;
         }
 
-        public ICharacter[] EnemyConstructor(int combatID, out int nextPartID, out int fleeID) // Creates enemy squad based on the db combat situation
+        public Character[] EnemyConstructor(int combatID, out int nextPartID, out int fleeID) // Creates enemy squad based on the db combat situation
         {
             nextPartID = 0; 
             fleeID = 0;
-            List<ICharacter> enemies = new List<ICharacter>();
+            List<Character> enemies = new List<Character>();
             string connString = $"Data Source={_main.dbPath};Version=3;";
             string json = "";
             using (SQLiteConnection conn = new SQLiteConnection(connString))

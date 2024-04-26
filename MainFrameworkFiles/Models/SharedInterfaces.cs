@@ -8,7 +8,7 @@ namespace IKT_3_project.MainFrameworkFiles.Models
 {
     public class SharedInterfaces
     {
-        public interface ICharacter
+        public interface Character
         {
             public string Name { get; set; }
             public string Class { get; set; }

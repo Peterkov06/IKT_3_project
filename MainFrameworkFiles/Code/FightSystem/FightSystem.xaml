@@ -55,7 +55,7 @@
                 <Button Content="Flee" x:Name="Fleebutton" Click="Fleebutton_Click"/>
             </Grid>
             <Button Content="Attack" x:Name="Attackbutton" Click="Attackbutton_Click" />
-            <Button Grid.Column="1" Content="Heal" x:Name="Healbutton" Click="Healbutton_Click"/>
+            <Button Grid.Column="1" Content="Heal" x:Name="Healbutton" Click="Heal"/>
         </Grid>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
@@ -91,12 +91,12 @@
             <StackPanel />
             <Grid Grid.Column="1" Grid.Row="2">
                 <StackPanel>
-                    <Button Content="Ally1" x:Name="Ally0" Height="32" Click="Ally_Click" Visibility="Collapsed"/>
+                    <Button Content="Ally1" x:Name="Ally0" MinHeight="32" Width="auto" Click="Ally_Click" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <Button Content="Enemy1" x:Name="EnemyButton0" Height="32" Visibility="Collapsed" Click="Enemy_click"/>
+                    <Button Content="Enemy1" x:Name="EnemyButton0" MinHeight="32" Visibility="Collapsed" Click="Enemy_click"/>
                 </StackPanel>
             </Grid>
 
@@ -116,12 +116,12 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1">
                 <StackPanel>
-                    <Button Content="Ally2" x:Name="Ally1" Height="42" Click="Ally_Click" Visibility="Collapsed"/>
+                    <Button Content="Ally2" x:Name="Ally1" MinHeight="42" Width="auto" Click="Ally_Click" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="3">
                 <StackPanel>
-                    <Button Content="Ally3" x:Name="Ally2" Height="43" Click="Ally_Click" Visibility="Collapsed"/>
+                    <Button Content="Ally3" x:Name="Ally2" MinHeight="43" Width="auto" Click="Ally_Click" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -140,12 +140,12 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1" Grid.Row="1">
                 <StackPanel>
-                    <Button Content="Enemy2" x:Name="EnemyButton1" Height="45" Visibility="Collapsed" Click="Enemy_click"/>
+                    <Button Content="Enemy2" x:Name="EnemyButton1" MinHeight="45" Visibility="Collapsed" Click="Enemy_click"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="3" Grid.Row="1">
                 <StackPanel>
-                    <Button Content="Enemy3" x:Name="EnemyButton2" Height="45" Visibility="Collapsed" Click="Enemy_click"/>
+                    <Button Content="Enemy3" x:Name="EnemyButton2" MinHeight="45" Visibility="Collapsed" Click="Enemy_click"/>
                 </StackPanel>
             </Grid>
         </Grid>

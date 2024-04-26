@@ -31,7 +31,7 @@ namespace IKT_3_project
         public Dictionary<int, Func<string, int, object?>> ParameterMethods = [];
         public Dictionary<int, Func<string, int, object?>> EventMethods = [];
         Character player;
-        List<ICharacter?> teamMates;
+        List<Character?> teamMates;
         int currentEventID = 0;
         public EventsScreen(MainWindow main, SaveData state)
         {
