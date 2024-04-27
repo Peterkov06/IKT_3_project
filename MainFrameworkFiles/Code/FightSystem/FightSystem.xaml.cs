@@ -296,11 +296,6 @@ namespace IKT_3_project
             ToggleActionBtns(false);     
             Turn();
         }
-        private void Healbutton_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleActionBtns(false);
-            Turn();
-        }
         private void Fleebutton_Click(object sender, RoutedEventArgs e)
         {
             ReturnToStory(fleeID);

@@ -41,12 +41,15 @@ namespace IKT_3_project
             teamMates = state.teammates.ToList();
             currentEventID = state.eventID;
 
-            EventMethods.Add(1, StartFight);
+            //DB: method
+            EventMethods.Add(1, StartFight); // param: combat ID
             EventMethods.Add(2, GiveHPToPlayer);
             EventMethods.Add(3, GiveStatToPlayer);
             EventMethods.Add(4, GiveItemToPlayer);
             EventMethods.Add(5, GiveBuffToPlayer);
+            EventMethods.Add(6, AllyConstructor);
 
+            //DB: parameter_method
             ParameterMethods.Add(1, GetHPFromPlayer);
             ParameterMethods.Add(2, GetStatFromPlayer);
             ParameterMethods.Add(3, GetItemFromPlayer);
@@ -227,9 +230,15 @@ namespace IKT_3_project
 
         public void ShowPlayerStats()
         {
+            if (player.b64IconString != "")
+            {
+                BitmapImage bitmapImage = MainWindow.BMPimgFormB64(player.b64IconString);
+                Image icon = new Image() { Source = bitmapImage, Stretch = Stretch.Uniform, Margin = new(5,0,5,0)};
+                PlayerIcon.Children.Add(icon);
+            }
             foreach (var item in _main.statsToShow)
             {
-                Label lbl;
+                Label? lbl = null;
                 switch (item)
                 {
                     case "Name":
@@ -239,11 +248,17 @@ namespace IKT_3_project
                         lbl = new Label() { Content=$"HP: {player.CurrentHP}", FontSize=16};
                         break;
                     default:
-                        player.Stats.TryGetValue(item, out int value);
-                        lbl = new() { Content = $"{item}:{value}", FontSize = 16 };
+                        bool got = player.Stats.TryGetValue(item, out int value);
+                        if (got)
+                        {
+                            lbl = new() { Content = $"{item}:{value}", FontSize = 16 };
+                        }
                         break;
                 }
-                PlayerStatBar.Children.Add(lbl);
+                if (lbl != null)
+                {
+                    PlayerStatBar.Children.Add(lbl);
+                }
             }
             Button inventoryBtn = new() { Content = "Inventory", Margin = new Thickness(5) };
             inventoryBtn.Click += (sender, e) => { InventoryWindow invWndw = new(ref player); invWndw.ShowDialog(); };

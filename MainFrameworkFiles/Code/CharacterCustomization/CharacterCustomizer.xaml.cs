@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace IKT_3_project
         public string[] races; // The choosable races array
         public string[] stats; // The array of stats that has to be assigned a value to (like Dexterity: 5)
         Dictionary<string, int> statsDict = new();
+        string b64ICON = "";
         public CharacterCustomizer(MainWindow main, LoadCharacterCreatorObj choosableOptions)
         {
             _main = main;
@@ -68,6 +70,7 @@ namespace IKT_3_project
         private void ConfirmChoices_Click(object sender, RoutedEventArgs e)
         {
             Character player = new(nameTextBox.Text, classComboBox.Text, raceComboBox.Text, 1, 100, statsDict, new(), new());
+            player.b64IconString = b64ICON;
             _main.SceneChanger(2, new BeginNewStory(player));
         }
 
@@ -90,6 +93,38 @@ namespace IKT_3_project
             confirmBtn.Visibility = Visibility.Visible;
         }
 
-        
+        private void ImportIMG(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.Multiselect = false;
+            string b64Strg;
+            if (file.ShowDialog() == true)
+            {
+                string imgpath = file.FileName;
+                BitmapImage bitmap = new();
+                bitmap.BeginInit();
+
+                bitmap.UriSource = new Uri(imgpath);
+                bitmap.EndInit();
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(ms);
+
+                    byte[] imgData = ms.ToArray();
+                    b64Strg = Convert.ToBase64String(imgData);
+                    b64ICON = b64Strg;
+                }
+                BitmapImage iconBMP = MainWindow.BMPimgFormB64(b64ICON);
+                Image icon = new Image() { Source = iconBMP, MaxHeight=150, MaxWidth=150, Margin= new Thickness(5) };
+                IconPlace.Children.Clear();
+                IconPlace.Children.Add(icon);
+                
+            }
+        }
     }
+
+
 }

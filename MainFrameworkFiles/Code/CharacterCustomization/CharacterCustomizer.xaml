@@ -32,26 +32,21 @@
 	
 	        <StackPanel Grid.Row="1" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Race:" HorizontalAlignment="Center"/>
-	            <ComboBox x:Name="raceComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-	                <ComboBoxItem Content="Human"/>
-	                <ComboBoxItem Content="Elf"/>
-	                <ComboBoxItem Content="Tiefling"/>
-	                <ComboBoxItem Content="Dwarf"/>
-	                <ComboBoxItem Content="Half-Orc"/>
-	            </ComboBox>
+                <ComboBox x:Name="raceComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                </ComboBox>
 	        </StackPanel>
 	
 	        <StackPanel Grid.Row="2" Margin="0,0,0,10" HorizontalAlignment="Center">
 	            <Label Content="Class:" HorizontalAlignment="Center"/>
-	            <ComboBox x:Name="classComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-	                <ComboBoxItem Content="Paladin"/>
-	                <ComboBoxItem Content="Wizard"/>
-	                <ComboBoxItem Content="Barbarian"/>
-	                <ComboBoxItem Content="Rogue"/>
-	            </ComboBox>
+                <ComboBox x:Name="classComboBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                </ComboBox>
 	        </StackPanel>
-	
-	        <Button Grid.Row="3" Content="Generate Stats" Click="GenerateStats_Click" HorizontalAlignment="Center"/>
+
+            <StackPanel Grid.Row="3">
+            <Button HorizontalAlignment="Center" Content="Load icon" Margin="5" Click="ImportIMG"></Button>
+	        <Button Content="Generate Stats" Click="GenerateStats_Click" HorizontalAlignment="Center" Margin="5"/>
+                
+            </StackPanel>
 	    </Grid>
 	    <Grid Grid.Column="1" Margin="20">
 	        <Grid.RowDefinitions>
@@ -69,8 +64,12 @@
 	            <Label Name="statsLabel" Content="Character Stats:" Visibility="Collapsed" Margin="5"
 	                   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 	        </Border>
-	
-	        <Button x:Name="confirmBtn" Grid.Row="2" Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,0,0,0"/>
+
+
+            <StackPanel Grid.Row="2">
+                <Button x:Name="confirmBtn"  Content="Confirm Choices" Click="ConfirmChoices_Click" HorizontalAlignment="Center" Margin="0,0,0,0"/>
+                <StackPanel x:Name="IconPlace"></StackPanel>
+            </StackPanel>
 	    </Grid>
 	</Grid>
 </UserControl>

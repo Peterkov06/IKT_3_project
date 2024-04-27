@@ -114,54 +114,6 @@ namespace IKT_3_project
             RefreshMainMenu();
         }
 
-        //When Importing the img of the character
-        private void ImportIMG(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog file = new OpenFileDialog();
-            file.Multiselect = false;
-            string b64Strg;
-            if (file.ShowDialog() == true)
-            {
-                string imgpath = file.FileName;
-                BitmapImage bitmap = new();
-                bitmap.BeginInit();
-
-                bitmap.UriSource = new Uri(imgpath);
-                bitmap.EndInit();
-                
-                using(MemoryStream ms = new MemoryStream())
-                {
-                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                    encoder.Save(ms);
-
-                    byte[] imgData = ms.ToArray();
-                    b64Strg = Convert.ToBase64String(imgData);
-                }
-
-                    byte[] imgDataBack = Convert.FromBase64String(b64Strg);
-                using (MemoryStream ms = new(imgDataBack))
-                {
-                    BitmapImage bmp = new();
-                    bmp.BeginInit();
-                    bmp.StreamSource = ms;
-                    bmp.CacheOption = BitmapCacheOption.OnLoad;
-
-                    bmp.EndInit();
-                    Image img = new Image();
-                    img.BeginInit();
-                    img.Source = bmp;
-                    img.EndInit();
-                    img.Margin = new Thickness(5);
-                    img.Stretch = Stretch.Uniform;
-                    selucaSecondus.Children.Add(img);
-
-                }
-                    
-
-            }
-        }
-
         public void LoadCharacterCreator(object sender, RoutedEventArgs e)
         {
             if (Available_Stories.SelectedItem != null)
@@ -170,13 +122,13 @@ namespace IKT_3_project
                 string selectedPath = element.Content.ToString();
                 Popup enterFileName = new Popup() { IsOpen = true, Placement = PlacementMode.Center  };
                 Label text = new Label() { Content = "Gave a name to the save", FontSize=20 };
-                TextBox fileNameBox = new() { Margin = new Thickness(15), Text = $"{selectedPath.Split('\\').Last().Split('.').First()}_save001.hoi5" };
+                TextBox fileNameBox = new() { Margin = new Thickness(15), Text = $"{selectedPath.Split('\\').Last().Split('.').First()}_save001" };
                 Button continueBtn = new Button() { Content = "Continue", Margin = new Thickness(15) };
                 continueBtn.Click += (s,e) => {
                     
                     if (fileNameBox.Text.Length > 0)
                     {
-                        _main.fileName = fileNameBox.Text;
+                        _main.fileName = fileNameBox.Text + ".hoi5";
                     }
                     _main.SceneChanger(1, new LoadNewStory(selectedPath));
                 };
