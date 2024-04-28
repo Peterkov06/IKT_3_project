@@ -11,17 +11,17 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1.5*" MinHeight="50"></RowDefinition>
                 <RowDefinition Height="10*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
                     <ColumnDefinition Width="10*"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="1.5*"></RowDefinition>
                 </Grid.RowDefinitions>
             <WrapPanel x:Name="PlayerStatBar" Grid.Column="1">
 
@@ -38,7 +38,7 @@
                     </Menu>
                 </DockPanel>
             </Grid>
-            <Grid x:Name="MainGrid" Grid.Row="1" ClipToBounds="False" Panel.ZIndex="2">
+            <Grid x:Name="MainGrid" Grid.Row="1" ClipToBounds="False" Panel.ZIndex="2" Margin="15">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
